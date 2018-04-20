@@ -9,7 +9,7 @@
     #define clr_str "clear"
 #endif
 
-struct Gibibyte //En datatyp som är en gibibyte stor
+struct Gibibyte //En datatyp som är en gibibyte stor ....
 {
     int8_t gibibyte[1073741824] = {0};  //Skapar en array som är 1024^3 bytes (alltså en gibibyte) stor. 
 };
