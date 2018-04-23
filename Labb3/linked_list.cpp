@@ -20,11 +20,10 @@ linked_list& linked_list::operator=(const linked_list& rhc)
 
 };
 
-linked_list& linked_list::operator+=(const linked_list& rhc)
+linked_list& linked_list::operator+=(const linked_list& rhc)    //Kommentar
 {
 
 };
-
 
 void linked_list::insert(double value, size_t pos)
 {
