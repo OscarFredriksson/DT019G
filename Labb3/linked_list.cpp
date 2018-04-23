@@ -20,7 +20,7 @@ linked_list& linked_list::operator=(const linked_list& rhc)
 
 };
 
-linked_list& linked_list::operator+=(const linked_list& rhc)    //Kommentar
+linked_list& linked_list::operator+=(const linked_list& rhc)
 {
 
 };
