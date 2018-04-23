@@ -45,7 +45,8 @@ int main()
             {
                 try
                 {
-                    gibibytes.push_back(new Gibibyte);  //Försök allokera en Gibibyte minne
+                    while(true)
+                        gibibytes.push_back(new Gibibyte);  //Försök allokera en Gibibyte minne
                 }
                 catch(std::bad_alloc e )    //Om det misslyckades
                 {
@@ -59,7 +60,8 @@ int main()
             {
                 try
                 {
-                    kibibytes.push_back(new Kibibyte);  //Försök allokera en Kibibyte
+                    while(true)
+                        kibibytes.push_back(new Kibibyte);  //Försök allokera en Kibibyte
                 }
                 catch( std::bad_alloc e )   //Om det misslyckades
                 {
