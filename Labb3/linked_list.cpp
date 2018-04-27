@@ -58,7 +58,10 @@ double linked_list::back() const
 
 double linked_list::at(size_t pos) const
 {
-    
+    node_t * current = head;
+    for(int i = 0; i < pos; i++)
+        current = current->next;
+    return current->value;
 };
 
 double linked_list::operator[](size_t pos) const
@@ -73,7 +76,20 @@ void linked_list::remove(size_t pos)
 
 double linked_list::pop_front()
 {
-
+    double value = head->value;
+    if(tail == head)
+    {
+        delete tail;
+        tail = nullptr;
+        delete head;
+        head = nullptr;
+    }
+    else
+    {
+        head = head->next;
+        delete head->prev;
+        head->prev = nullptr;
+    }
 };
 
 double linked_list::pop_back()
@@ -99,23 +115,21 @@ size_t linked_list::size() const
 {
     size_t size = 0;
     node_t * current = head;
-    while(current != nullptr)
-    {
-        size++;
+    for(;current != nullptr; size++)
         current = current->next;
-    }
 
     return size;
 };
 
 bool linked_list::is_empty() const
 {
-
+    return head == nullptr;
 };
 
 void linked_list::print() const
 {
-
+    for(size_t i = 0; i < size(); i++)
+        std::cout << (i) << std::endl;
 };
 
 void linked_list::print_reverse() const
