@@ -97,7 +97,15 @@ double linked_list::pop_back()
 
 size_t linked_list::size() const
 {
+    size_t size = 0;
+    node_t * current = head;
+    while(current != nullptr)
+    {
+        size++;
+        current = current->next;
+    }
 
+    return size;
 };
 
 bool linked_list::is_empty() const
