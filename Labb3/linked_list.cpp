@@ -32,27 +32,38 @@ void linked_list::insert(double value, size_t pos)
 
 void linked_list::push_front(double value)
 {
-
+    auto node = new linked_list::node_t(value, head, nullptr);
+    head->prev = node;
+    node->next = head;
+    head = node;
 };
 
 void linked_list::push_back(double value)
 {
-
+    auto node = new linked_list::node_t(value, nullptr, tail);
+    tail->next = node;
+    node->prev = tail;
+    tail = node;
 };
 
 double linked_list::front() const
 {
-
+    return head->value;
 };
 
 double linked_list::back() const
 {
-
+    return tail->value;
 };
 
 double linked_list::at(size_t pos) const
 {
+    
+};
 
+double linked_list::operator[](size_t pos) const
+{
+    return at(pos);
 };
 
 void linked_list::remove(size_t pos)
@@ -67,7 +78,21 @@ double linked_list::pop_front()
 
 double linked_list::pop_back()
 {
-
+    double value = tail->value;
+    if(tail == head)
+    {
+        delete tail;
+        tail = nullptr;
+        delete head;
+        head = nullptr;
+    }
+    else
+    {
+        tail = tail->prev;
+        delete tail->next;
+        tail->next = nullptr;
+    }
+    return value;
 };
 
 size_t linked_list::size() const

@@ -10,7 +10,7 @@ public:
     //Kopierings constructor?
     linked_list(const linked_list & src);
     
-    //Destructor?
+    //Destructor
     ~linked_list();
 
     //Överlagra tilldelningsoperatorn
@@ -55,6 +55,6 @@ private:
         node_t * prev;  //Föregående element i listan?
     };
 
-    node_t * head;  //Första positionen i listan
-    node_t * tail;  //Sista positionen i listan
+    node_t * head = nullptr;  //Första positionen i listan
+    node_t * tail = nullptr;  //Sista positionen i listan
 };
