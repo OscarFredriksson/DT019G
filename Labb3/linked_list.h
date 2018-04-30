@@ -12,7 +12,7 @@ public:
     //linked_list(const linked_list & src);
     
     //Destructor
-    //~linked_list();
+    ~linked_list();
 
     /*
     //Överlagra tilldelningsoperatorn
@@ -52,6 +52,9 @@ public:
 private:
     struct node_t   //En nod i listan
     {
+        node_t(double value , node_t * next = 0, node_t * prev = 0)
+            :value(value), next(next), prev(prev) {};   //Constructor
+        
         double value;   //Nodens data
         node_t * next;  //Nästa element i listan?
         node_t * prev;  //Föregående element i listan?

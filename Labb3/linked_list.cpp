@@ -5,11 +5,11 @@
 
 };*/
 
-/*linked_list::~linked_list()
+linked_list::~linked_list()
 {
     for(int i = 0; i < size(); i++)
         pop_front();
-};*/
+};
 
 /*
 linked_list& linked_list::operator=(const linked_list& rhc)
