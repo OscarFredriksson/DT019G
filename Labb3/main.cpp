@@ -1,6 +1,6 @@
 #include "linked_list.h"
-#include <stdlib.h>
-#include <time.h>
+#include <cstdlib>
+#include <ctime>
 
 int main()
 {
@@ -8,16 +8,20 @@ int main()
     linked_list list;
     for(int i = 0; i < 20; i++)
     {
-      list.push_front(rand() % 100);
-      std::cout << list.at(i) << " ";
+      list.push_back(rand() % 100 + 1);
     }
-    std::cout << std::endl << list.size() << std::endl;
+    //std::cout << list.size() << std::endl;
+
+    for(int i = 0; i < list.size(); i++)
+        std::cout << list.at(i) << " ";
     
-    
-    /*list.push_front(5);
-    std::cout << list.front() << " " << list.size() << std::endl;
-    list.push_back(3);
-    std::cout << list.size() << std::endl;*/
+    std::cout << std::endl;
+        
+    list.push_front(5);
+    list.print();
+    list.push_back(2);
+    list.print();
+    std::cout << list.size() << std::endl;
 
     return 0; 
 }

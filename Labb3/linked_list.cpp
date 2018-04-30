@@ -30,10 +30,14 @@ void linked_list::insert(double value, size_t pos)
 void linked_list::push_front(double value)
 {
     node_t * node = new linked_list::node_t(value,head, 0); //skapa en ny nod
-    if(head)    head->prev = node;  //Om det finns ett huvud, tilldela dess prev-pekare till den nya noden
     
-    if(!tail && head)   tail = head;    //Gör det gamla huvudet till svans
-    else    tail = node;    //Om det inte finns ett gam
+    if(head)    
+    {
+        head->prev = node;  
+        node->next = head;
+    }
+    if(size() == 1)     //Om listan bara innehåller ett element
+        tail = head;    //Gör det gamla huvudet till svans    
 
     head = node;    //Gör den nya noden till huvud    
 };
@@ -46,7 +50,7 @@ void linked_list::push_back(double value)
         tail->next = node;
         node->prev = tail;
     }
-    if(!head)   head = node;
+    if(!head)   head = node;    //Om det inte finns ett huvud
     tail = node;
 };
 
@@ -99,7 +103,7 @@ double linked_list::pop_front()
     }
     return value;
 };
-/*
+
 double linked_list::pop_back()
 {
     double value = tail->value;
@@ -120,31 +124,34 @@ double linked_list::pop_back()
 };
 
 
-*/size_t linked_list::size() const
+size_t linked_list::size() const
 {
     size_t size = 0;
     node_t * current = head;
-    for(;current; size++)
-    {
-        std::cout << current->value << " ";
+    
+    for(;current; size++)   
         current = current->next;
-    }
-    //std::cout << std::endl;
+    
     return size;
 };
-/*
+
 bool linked_list::is_empty() const
 {
-    return head == nullptr;
+    return head == nullptr; //Returnerar om huvudet är nullptr eller inte
 };
 
 void linked_list::print() const
 {
-    for(size_t i = 0; i < size(); i++)
-        std::cout << (i) << std::endl;
+    for(int i = 0; i < size(); i++)
+        std::cout << at(i) << " ";
+    std::cout << std::endl;
 };
+
 
 void linked_list::print_reverse() const
 {
+    for(int i = size(); i > 0; i--)
+        std::cout << at(i-1) << " ";
+    std::cout << std::endl;
+};
 
-};*/
