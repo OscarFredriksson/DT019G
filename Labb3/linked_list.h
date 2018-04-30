@@ -52,6 +52,7 @@ public:
 private:
     struct node_t   //En nod i listan
     {
+        node_t() = default; //Behövs inte??
         node_t(double value , node_t * next = 0, node_t * prev = 0)
             :value(value), next(next), prev(prev) {};   //Constructor
         
