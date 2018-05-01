@@ -7,7 +7,8 @@
 
 linked_list::~linked_list()
 {
-    while(!is_empty())   pop_back(); //Ta bort samtliga element i listan
+    for(int i = 0; i < size(); i++)
+        pop_back(); //Ta bort samtliga element i listan
 };
 
 
@@ -21,11 +22,18 @@ linked_list::~linked_list()
 linked_list& linked_list::operator+=(const linked_list& rhc)
 {
 
-};
+};*/
 
-void linked_list::insert(double value, size_t pos)
+/*void linked_list::insert(double value, size_t pos)
 {
-
+    node_t * node = head;
+    
+    for(int i = 0; i < pos; i++)
+        node = node->next;
+    
+    node->prev->next = node;
+    node->next->prev = node;
+    node->value = value;
 };*/
 
 void linked_list::push_front(double value)
@@ -146,7 +154,11 @@ size_t linked_list::size() const
 
 bool linked_list::is_empty() const
 {
-    return head == nullptr; //Returnerar om huvudet är nullptr eller inte
+    if(size() > 0)
+        return false;
+    else
+        return true;
+    //return size() == 0; //Returnerar om huvudet är nullptr eller inte
 };
 
 void linked_list::print() const

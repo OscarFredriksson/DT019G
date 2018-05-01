@@ -16,7 +16,7 @@ public:
 
     
     //Överlagra tilldelningsoperatorn
-    linked_list & operator =(const linked_list & rhs);
+    //linked_list & operator =(const linked_list & rhs);
     
     //Överlagra += operatorn.
     //linked_list & operator +=(const linked_list & rhs);
