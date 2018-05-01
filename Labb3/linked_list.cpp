@@ -79,12 +79,12 @@ double linked_list::at(size_t pos) const
     
     return current->value;
 };
-/*
-double & linked_list::operator[](size_t pos) const
+
+double linked_list::operator[](size_t pos) const
 {
     return at(pos);
 };
-
+/*
 void linked_list::remove(size_t pos)
 {
 

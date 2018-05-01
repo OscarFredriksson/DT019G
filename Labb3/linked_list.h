@@ -31,7 +31,7 @@ public:
     double front() const;                  //Returnerar elementet längst fram
     double back() const;                   //Returnerar elementet längst bak
     double at (size_t pos) const;          //Returnerar elementet på en specifik position
-    //double & operator[](size_t pos) const;   //Returnerar elementet på en specifik position   
+    double operator[](size_t pos) const;   //Returnerar elementet på en specifik position   
 
     
 
