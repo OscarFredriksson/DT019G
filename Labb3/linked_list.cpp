@@ -8,8 +8,14 @@
 linked_list::~linked_list()
 {
     for(int i = 0; i < size(); i++)
-        pop_front();
+        pop_back();
 };
+
+/*linked_list::node_t::node_t(double value, node_t * next, node_t * prev)
+    :value(value), next(prev), prev(prev)
+{
+
+};*/
 
 /*
 linked_list& linked_list::operator=(const linked_list& rhc)
@@ -29,8 +35,7 @@ void linked_list::insert(double value, size_t pos)
 
 void linked_list::push_front(double value)
 {
-    node_t * node = new linked_list::node_t(value,head, 0); //skapa en ny nod
-    
+    node_t * node = new node_t(value,head, nullptr); //skapa en ny nod
     if(head)    
     {
         head->prev = node;  
@@ -44,7 +49,7 @@ void linked_list::push_front(double value)
 
 void linked_list::push_back(double value)
 {
-    node_t * node = new linked_list::node_t(value, nullptr, tail);
+    node_t * node = new node_t(value, nullptr, tail);
     if(tail)    
     {
         tail->next = node;

@@ -5,23 +5,18 @@
 int main()
 {
     srand(time(NULL));
-    linked_list list;
-    for(int i = 0; i < 20; i++)
+    linked_list list1;
+    linked_list list2;
+    for(int i = 0; i < 100; i++)
     {
-      list.push_back(rand() % 100 + 1);
+      list1.push_back(list1.back() + rand() % 20);
+      list2.push_back(list1.back() + rand() % 20);
     }
-    //std::cout << list.size() << std::endl;
+    list1.print();
+    list2.print();
 
-    for(int i = 0; i < list.size(); i++)
-        std::cout << list.at(i) << " ";
-    
-    std::cout << std::endl;
-        
-    list.push_front(5);
-    list.print();
-    list.push_back(2);
-    list.print();
-    std::cout << list.size() << std::endl;
+
+
 
     return 0; 
 }
