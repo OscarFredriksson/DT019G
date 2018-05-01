@@ -7,22 +7,17 @@
 
 linked_list::~linked_list()
 {
-    for(int i = 0; i < size(); i++)
-        pop_back();
+    while(!is_empty())   pop_back(); //Ta bort samtliga element i listan
 };
 
-/*linked_list::node_t::node_t(double value, node_t * next, node_t * prev)
-    :value(value), next(prev), prev(prev)
+
+/*linked_list& linked_list::operator=(const linked_list& rhc)
 {
+    while(!is_empty()) pop_back();   //Töm listan
 
 };*/
 
 /*
-linked_list& linked_list::operator=(const linked_list& rhc)
-{
-
-};
-
 linked_list& linked_list::operator+=(const linked_list& rhc)
 {
 
@@ -44,7 +39,7 @@ void linked_list::push_front(double value)
     if(size() == 1)     //Om listan bara innehåller ett element
         tail = head;    //Gör det gamla huvudet till svans    
 
-    head = node;    //Gör den nya noden till huvud    
+    head = node;    //Gör den nya noden till huvud  
 };
 
 void linked_list::push_back(double value)
@@ -84,12 +79,21 @@ double linked_list::operator[](size_t pos) const
 {
     return at(pos);
 };
-/*
+
 void linked_list::remove(size_t pos)
 {
-
+    node_t * rm = head;
+    for(int i = 0; i < pos; i++)
+        rm = rm->next;
+    
+    rm->prev->next = rm->next;
+    rm->next->prev = rm->prev;
+    
+    rm->next = nullptr;
+    rm->prev = nullptr;
+    delete rm;
 };
-*/
+
 double linked_list::pop_front()
 {
     double value = head->value;
@@ -159,4 +163,3 @@ void linked_list::print_reverse() const
         std::cout << at(i-1) << " ";
     std::cout << std::endl;
 };
-

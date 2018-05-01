@@ -13,12 +13,19 @@ int main()
       list2.push_back(list2.back() + rand() % 20);
     }
 
-    if(list1[50] > list2[50]) 
+    if(list1[50] > list2[50])
+    { 
         std::cout << "Elementet i lista 1 är störst." << std::endl;
+        list1.remove(50);
+    }
     else if(list1[50] < list2[50])
+    {
         std::cout << "Elementet i lista 2 är störst." << std::endl;
+        list2.remove(50);
+    }
     else
         std::cout << "Elementen är lika stora." << std::endl;
+
 
     return 0; 
 }
