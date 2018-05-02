@@ -27,7 +27,7 @@ void linked_list::insert(double value, size_t pos)
     if(size() < pos)    //Om positionen inte finns 
     {
         push_back(value);   //Lägg till elementet sist i listan
-        return;
+        return; //Gå ur funktionen
     }
     
     node_t * node = new node_t();   //Den nya noden som ska läggas till
@@ -35,14 +35,14 @@ void linked_list::insert(double value, size_t pos)
 
     node_t * node_pos = head;   //Positionen för den nya noden
     
-    for(int i = 0; i <= pos; i++)
+    for(int i = 0; i <= pos; i++)   //Loopa fram till positionen för den nya noden
         node_pos = node_pos->next;
     
-    node->next = node_pos;
-    node->prev = node_pos->prev;
+    node->next = node_pos;  //Den nod som tidigare låg på den nya nodens position ska vara nästa nod i listan
+    node->prev = node_pos->prev;    //Den nya noden ska peka på föregående nod i listan
 
-    node_pos->prev->next = node;
-    node_pos->prev = node;
+    node_pos->prev->next = node;    //Den nod som var innan den nya nodens position ska peka på den nya noden som nästa nod i listan
+    node_pos->prev = node;  //Den nod som nu är nästa nod ska peka på den nya noden som föregående nod i listan
 };
 
 void linked_list::push_front(double value)
