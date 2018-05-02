@@ -22,7 +22,7 @@ public:
     //linked_list & operator +=(const linked_list & rhs);
     
     //Lägga till element
-    //void insert(double value, size_t pos);  //Lägg till ett element på en specifik position
+    void insert(double value, size_t pos);  //Lägg till ett element på en specifik position
     void push_front(double value);          //Lägg till ett element längst fram
     void push_back(double value);           //Lägg till ett element längst bak
     
@@ -52,7 +52,7 @@ public:
 private:
     struct node_t   //En nod i listan
     {
-        node_t() = default; //Behövs inte??
+        node_t() = default; //Constructor
         node_t(double value , node_t * next = 0, node_t * prev = 0) //Constructor
             :value(value), next(next), prev(prev) {};  
         

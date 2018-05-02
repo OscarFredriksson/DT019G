@@ -7,17 +7,13 @@
 
 linked_list::~linked_list()
 {
-
     while(!is_empty())  pop_back(); //Ta bort samtliga element i listan
-
-    std::cout << "storlek " << size() << std::endl;
 };
 
 
 /*linked_list& linked_list::operator=(const linked_list& rhc)
 {
     while(!is_empty()) pop_back();   //Töm listan
-
 };*/
 
 /*
@@ -26,17 +22,28 @@ linked_list& linked_list::operator+=(const linked_list& rhc)
 
 };*/
 
-/*void linked_list::insert(double value, size_t pos)
+void linked_list::insert(double value, size_t pos)
 {
-    node_t * node = head;
+    if(size() < pos)    //Om positionen inte finns 
+    {
+        push_back(value);   //Lägg till elementet sist i listan
+        return;
+    }
     
-    for(int i = 0; i < pos; i++)
-        node = node->next;
+    node_t * node = new node_t();   //Den nya noden som ska läggas till
+    node->value = value; 
+
+    node_t * node_pos = head;   //Positionen för den nya noden
     
-    node->prev->next = node;
-    node->next->prev = node;
-    node->value = value;
-};*/
+    for(int i = 0; i <= pos; i++)
+        node_pos = node_pos->next;
+    
+    node->next = node_pos;
+    node->prev = node_pos->prev;
+
+    node_pos->prev->next = node;
+    node_pos->prev = node;
+};
 
 void linked_list::push_front(double value)
 {
