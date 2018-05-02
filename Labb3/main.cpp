@@ -28,5 +28,10 @@ int main()
     //list1.insert(5, 2);
     //list1.print();
 
+    /*list1.push_back(2);
+    list1.push_back(3);
+    std::cout << list1.pop_back() << std::endl;
+    std::cout << list1.pop_back() << std::endl;
+    list1.size();*/
     return 0; 
 }

@@ -7,8 +7,10 @@
 
 linked_list::~linked_list()
 {
-    for(int i = 0; i < size(); i++)
-        pop_back(); //Ta bort samtliga element i listan
+
+    while(!is_empty())  pop_back(); //Ta bort samtliga element i listan
+
+    std::cout << "storlek " << size() << std::endl;
 };
 
 
@@ -122,14 +124,14 @@ double linked_list::pop_front()
 };
 
 double linked_list::pop_back()
-{
+{    
     double value = tail->value;
+
     if(tail == head)
     {
-        delete tail;
         tail = nullptr;
-        delete head;
         head = nullptr;
+        delete tail;
     }
     else
     {
@@ -137,6 +139,7 @@ double linked_list::pop_back()
         delete tail->next;
         tail->next = nullptr;
     }
+       
     return value;
 };
 
