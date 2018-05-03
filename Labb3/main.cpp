@@ -7,11 +7,15 @@ int main()
     srand(time(NULL));
     linked_list list1;
     linked_list list2;
+    
+    std::cout << list1.front() << std::endl;
+    
     for(int i = 0; i < 5; i++)
     {
       list1.push_back(list1.back() + rand() % 20);
       list2.push_back(list2.back() + rand() % 20);
     }
+    std::cout << list1.front() << std::endl;
 
     /*if(list1[50] > list2[50])
     { 

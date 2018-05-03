@@ -12,8 +12,8 @@ int main()
         return -1;
     }
 
-    bool exit = false;
-    while(!exit)
+    bool exit = false;  
+    while(!exit)    //Loopa sålänge användaren inte ber om att avsluta programmet
     {
         printMenu();
 

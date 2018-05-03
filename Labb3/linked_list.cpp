@@ -79,21 +79,19 @@ void linked_list::push_back(double value)
 };
 
 double linked_list::front() const
-{
-    if(head)    return head->value; 
-    else        return NULL;
+{  
+    return head->value; //Returnera huvudets värde
 };
 
 double linked_list::back() const
 {
-    if(tail)    return tail->value;
-    else        return NULL;
+    return tail->value; //Returnera svansens värde
 };
 
 double linked_list::at(size_t pos) const
 {
     node_t * current = head;
-    for(int i = 0; i != pos; i++)
+    for(int i = 0; i <= pos; i++)
         current = current->next;
     
     return current->value;
