@@ -90,8 +90,8 @@ double linked_list::back() const
 
 double linked_list::at(size_t pos) const
 {
-    node_t * current = head;
-    for(int i = 0; i <= pos; i++)
+    node_t * current = head;    
+    for(int i = 0; i != pos; i++)
         current = current->next;
     
     return current->value;
