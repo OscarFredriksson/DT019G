@@ -2,7 +2,7 @@
 
 linked_list::linked_list(const linked_list & src)
 {
-    *this = src;
+    *this = src;    //Ska göra samma som tilldelningsoperatorn
 };
 
 linked_list::~linked_list()
@@ -10,19 +10,16 @@ linked_list::~linked_list()
     while(!is_empty())  pop_back(); //Ta bort samtliga element i listan
 };
 
-
-linked_list& linked_list::operator=(const linked_list& rhc)
+linked_list& linked_list::operator=(const linked_list& rhs)
 {
     while(!is_empty()) pop_back();   //Töm listan
 
-    *this += rhc;   //Tilldela den nya listan till denna lista
-    return *this;   //Returnera listan
+    return *this += rhs;   //Tilldela den nya listan till denna lista
 };
 
-
-linked_list& linked_list::operator+=(const linked_list& rhc)
+linked_list & linked_list::operator+=(const linked_list & rhs)
 {
-    node_t * current = rhc.head;    //Skapar en ny nod för att gå igenom inargumentslistan
+    node_t * current = rhs.head;    //Skapar en ny nod för att gå igenom inargumentslistan
     
     while(current)  //Så länge slutet av listan inte är nådd
     {
@@ -30,6 +27,11 @@ linked_list& linked_list::operator+=(const linked_list& rhc)
         current = current->next;    //Gå vidare i listan
     }
     return *this;   //Returnera originallistan.
+};
+
+linked_list & linked_list::append(const linked_list & rhs)
+{
+    return *this += rhs;    //Ska göra samma som sammanfogningsoperatorn
 };
 
 void linked_list::insert(double value, size_t pos)
@@ -43,7 +45,7 @@ void linked_list::insert(double value, size_t pos)
     node_t * node_pos = head;   //Positionen för den nya noden
     
     for(int i = 0; i <= pos; i++)   //Loopa fram till positionen för den nya noden
-        node_pos = node_pos->next;
+        node_pos = node_pos->next;  //Gå till nästa nod i listan
 
     node_t * node = new node_t();   //Den nya noden som ska läggas till
     node->value = value;    //Tilldela värdet till den nya noden
@@ -90,30 +92,31 @@ double linked_list::back() const
 
 double linked_list::at(size_t pos) const
 {
-    node_t * current = head;    
-    for(int i = 0; i != pos; i++)
-        current = current->next;
+    node_t * current = head;    //Ska efter loopen peka på den givna platsen i listan
+    for(int i = 0; i != pos; i++)   //Loopa till den givna positionen
+        current = current->next;    //Gå till nästa nod i listan
     
-    return current->value;
+    return current->value;  //Returnera värdet för den givna noden
 };
 
 double linked_list::operator[](size_t pos) const
 {
-    return at(pos);
+    return at(pos); //Ska göra samma som at(), returnera detta för den givna positionen.
 };
 
 void linked_list::remove(size_t pos)
 {
-    node_t * rm = head;
-    for(int i = 0; i < pos; i++)
-        rm = rm->next;
+    node_t * rm = head; //Ska efter loopen peka på den nod som ska tas bort
+    for(int i = 0; i < pos; i++)    //Loopa till den givna positionen
+        rm = rm->next;  //Gå till nästa nod i listan
     
-    rm->prev->next = rm->next;
-    rm->next->prev = rm->prev;
+    rm->prev->next = rm->next;  //Föregående nods next-pekare ska peka på efterföljande nod
+    rm->next->prev = rm->prev;  //Efterföljande nods prev-pekare ska peka på föregående nod
     
-    rm->next = nullptr;
+    //Det borttagna elementets pekare ska inte peka på något
+    rm->next = nullptr;  
     rm->prev = nullptr;
-    delete rm;
+    delete rm;  //Frigör minnet
 };
 
 double linked_list::pop_front()
@@ -128,9 +131,9 @@ double linked_list::pop_front()
     }
     else
     {
-        head = head->next;
-        delete head->prev;
-        head->prev = nullptr;
+        head = head->next;  //Gör det tidigare elementet till head
+        delete head->prev;  //Frigör minnet
+        head->prev = nullptr;   //Ta bort det första elementet ur listan
     }
 
     return value;
@@ -159,13 +162,13 @@ double linked_list::pop_back()
 
 size_t linked_list::size() const
 {
-    size_t size = 0;
-    node_t * current = head;
+    size_t size = 0;    //Listans storlek
+    node_t * current = head;    //Skapar en ny pekare för att iterera igenom listan
     
-    for(;current; size++)   
-        current = current->next;
+    for(;current; size++)   //Loopa sålänge listans slut inte är nådd, öka på storleken varje varv
+        current = current->next;    //Gå till nästa nod i listan
     
-    return size;
+    return size;    //Returnera storleken
 };
 
 bool linked_list::is_empty() const
@@ -175,15 +178,15 @@ bool linked_list::is_empty() const
 
 void linked_list::print() const
 {
-    for(int i = 0; i < size(); i++)
-        std::cout << at(i) << " ";
-    std::cout << std::endl;
+    for(int i = 0; i < size(); i++) //Loopar igenom listan
+        std::cout << at(i) << " ";  //Skriv ut elementet på aktuell position
+    std::cout << std::endl; //Efter samtliga element, skriv ut en radbrytning
 };
 
 
 void linked_list::print_reverse() const
 {
-    for(int i = size(); i > 0; i--)
-        std::cout << at(i-1) << " ";
-    std::cout << std::endl;
+    for(int i = size()-1; i >= 0; i--)  //Loopa igenom listan omvänt
+        std::cout << at(i) << " ";  //Skriv ut elementet på aktuell position
+    std::cout << std::endl; //Efter samtliga element skriv ut en radbrytning
 };

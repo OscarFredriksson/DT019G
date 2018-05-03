@@ -18,14 +18,14 @@ public:
     //Överlagra tilldelningsoperatorn
     linked_list & operator =(const linked_list & rhs);
     
-    //Överlagra += operatorn.
+    //Överlagra sammanfogningsoperatorn
     linked_list & operator +=(const linked_list & rhs);
+    linked_list & append(const linked_list & rhs);
     
     //Lägga till element
     void insert(double value, size_t pos);  //Lägg till ett element på en specifik position
     void push_front(double value);          //Lägg till ett element längst fram
     void push_back(double value);           //Lägg till ett element längst bak
-    
     
     //Nå element
     double front() const;                  //Returnerar elementet längst fram
