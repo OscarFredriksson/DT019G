@@ -4,6 +4,8 @@
 
 linked_list merge(linked_list list1, linked_list list2);
 
+bool isSorted(linked list list);
+
 int main()
 {
     srand(time(NULL));  //Initiera slumpgeneratorn
@@ -54,6 +56,8 @@ int main()
 
     linked_list list4 = merge(list1, list2);
 
+    std::cout << isSorted(list4) << std::endl;
+
     return 0;
 }
 
@@ -88,4 +92,13 @@ linked_list merge(linked_list list1, linked_list list2)
         list.push_back(list2.pop_front());
 
     return list;
+}
+
+bool isSorted(linked_list list)
+{
+    for(int i = 0; i < list.size()-2;i++)
+        if(list[i] > list[i+1])
+            return false;
+    
+    return true;
 }
