@@ -8,7 +8,7 @@ public:
     //Default constructor
     linked_list() = default;
     
-    //Kopierings constructor?
+    //Kopierings constructor
     linked_list(const linked_list & src);
     
     //Destructor
@@ -30,7 +30,7 @@ public:
     //Nå element
     double front() const;                  //Returnerar elementet längst fram
     double back() const;                   //Returnerar elementet längst bak
-    double at (size_t pos) const;          //Returnerar elementet på en specifik position
+    double at(size_t pos) const;          //Returnerar elementet på en specifik position
     double operator[](size_t pos) const;   //Returnerar elementet på en specifik position   
 
     

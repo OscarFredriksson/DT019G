@@ -180,6 +180,7 @@ void linked_list::print() const
 {
     for(int i = 0; i < size(); i++) //Loopar igenom listan
         std::cout << at(i) << " ";  //Skriv ut elementet på aktuell position
+    
     std::cout << std::endl; //Efter samtliga element, skriv ut en radbrytning
 };
 
