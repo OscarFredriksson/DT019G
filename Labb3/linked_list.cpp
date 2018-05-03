@@ -22,13 +22,14 @@ linked_list& linked_list::operator=(const linked_list& rhc)
 
 linked_list& linked_list::operator+=(const linked_list& rhc)
 {
-    node_t * current = rhc.head;
-    while(current)
+    node_t * current = rhc.head;    //Skapar en ny nod för att gå igenom inargumentslistan
+    
+    while(current)  //Så länge slutet av listan inte är nådd
     {
-        push_back(current->value);
-        current = current->next;
+        push_back(current->value);  //Lägg till den nuvarande nodens värde till originallistan
+        current = current->next;    //Gå vidare i listan
     }
-    return *this;
+    return *this;   //Returnera originallistan.
 };
 
 void linked_list::insert(double value, size_t pos)
@@ -45,8 +46,7 @@ void linked_list::insert(double value, size_t pos)
         node_pos = node_pos->next;
 
     node_t * node = new node_t();   //Den nya noden som ska läggas till
-    
-    node->value = value; 
+    node->value = value;    //Tilldela värdet till den nya noden
     
     node->next = node_pos;  //Den nod som tidigare låg på den nya nodens position ska vara nästa nod i listan
     node->prev = node_pos->prev;    //Den nya noden ska peka på föregående nod i listan
@@ -57,9 +57,9 @@ void linked_list::insert(double value, size_t pos)
 
 void linked_list::push_front(double value)
 {
-    node_t * node = new node_t(value, head, nullptr); //skapa en ny nod
+    node_t * node = new node_t(value, head, nullptr); //Skapa en ny nod
     
-    if(head)    head->prev = node;  
+    if(head)    head->prev = node;  //Om det finns ett huvud, tilldela dess prev-pekare till den nya noden
 
     head = node;    //Gör den nya noden till huvud  
     
@@ -69,25 +69,25 @@ void linked_list::push_front(double value)
 
 void linked_list::push_back(double value)
 {
-    node_t * node = new node_t(value, nullptr, tail);
+    node_t * node = new node_t(value, nullptr, tail);   //Skapa en ny nod
     
-    if(tail)    tail->next = node;
+    if(tail)    tail->next = node;  //Om det finns en svans, tilldela dess next-pekare till den nya noden
 
-    tail = node;
+    tail = node;    //Gör den nya noden till svans
 
     if(!head)   head = node;    //Om det inte finns ett huvud
 };
 
 double linked_list::front() const
 {
-    if(head)    return head->value;
-    else        return -1;
+    if(head)    return head->value; 
+    else        return NULL;
 };
 
 double linked_list::back() const
 {
     if(tail)    return tail->value;
-    else        return -1;
+    else        return NULL;
 };
 
 double linked_list::at(size_t pos) const
