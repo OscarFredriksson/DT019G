@@ -9,17 +9,17 @@ public:
     linked_list() = default;
     
     //Kopierings constructor?
-    //linked_list(const linked_list & src);
+    linked_list(const linked_list & src);
     
     //Destructor
     ~linked_list();
 
     
     //Överlagra tilldelningsoperatorn
-    //linked_list & operator =(const linked_list & rhs);
+    linked_list & operator =(const linked_list & rhs);
     
     //Överlagra += operatorn.
-    //linked_list & operator +=(const linked_list & rhs);
+    linked_list & operator +=(const linked_list & rhs);
     
     //Lägga till element
     void insert(double value, size_t pos);  //Lägg till ett element på en specifik position
