@@ -2,7 +2,7 @@
 
 linked_list::linked_list(const linked_list & src)
 {
-    *this = src;    //Ska göra samma som tilldelningsoperatorn
+    *this += src;    //Ska göra samma som tilldelningsoperatorn
 };
 
 linked_list::~linked_list()
@@ -12,6 +12,8 @@ linked_list::~linked_list()
 
 linked_list& linked_list::operator=(const linked_list& rhs)
 {
+    if(this == &rhs) return *this;  //Undvik self assignment
+
     while(!is_empty()) pop_back();   //Töm listan
 
     return *this += rhs;   //Tilldela den nya listan till denna lista
@@ -136,7 +138,7 @@ double linked_list::pop_front()
         head->prev = nullptr;   //Ta bort det första elementet ur listan
     }
 
-    return value;
+    return value;   //Returnera värdet för det sista elementet i listan
 };
 
 double linked_list::pop_back()
