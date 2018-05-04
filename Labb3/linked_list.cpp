@@ -115,9 +115,6 @@ void linked_list::remove(size_t pos)
     rm->prev->next = rm->next;  //Föregående nods next-pekare ska peka på efterföljande nod
     rm->next->prev = rm->prev;  //Efterföljande nods prev-pekare ska peka på föregående nod
     
-    //Det borttagna elementets pekare ska inte peka på något
-    rm->next = nullptr;  
-    rm->prev = nullptr;
     delete rm;  //Frigör minnet
 };
 
