@@ -49,8 +49,7 @@ void linked_list::insert(double value, size_t pos)
     for(int i = 0; i <= pos; i++)   //Loopa fram till positionen för den nya noden
         node_pos = node_pos->next;  //Gå till nästa nod i listan
 
-    node_t * node = new node_t();   //Den nya noden som ska läggas till
-    node->value = value;    //Tilldela värdet till den nya noden
+    node_t * node = new node_t(value);   //Den nya noden som ska läggas till
     
     node->next = node_pos;  //Den nod som tidigare låg på den nya nodens position ska vara nästa nod i listan
     node->prev = node_pos->prev;    //Den nya noden ska peka på föregående nod i listan
