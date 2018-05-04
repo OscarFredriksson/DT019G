@@ -16,8 +16,6 @@ int main()
 {
     srand(time(NULL));  //Initiera slumpgeneratorn
     
-    
-
     //Skapa två nya listor
     linked_list list1;  
     linked_list list2;
