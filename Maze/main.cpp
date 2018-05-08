@@ -3,10 +3,12 @@
 #include <unistd.h> //getopt
 #include <cstdlib> //atoi, srand
 #include <stack>
-#include <ctime>    //time
+#include <ctime>
 
 
 void printHelp();   //Skriver ut hjälptext
+
+bool validateArg(char* optarg);
 
 int main(int argc, char* argv[])
 {
@@ -23,55 +25,59 @@ int main(int argc, char* argv[])
         if(arg == 'h')
         { 
             printHelp();    
-            return 0;   
+            return EXIT_SUCCESS;   
         }
         if(arg == 's')
         {
-            maze.columns = atoi(optarg);
-            maze.rows = atoi(optarg);
+            if(validateArg(optarg))
+            {
+                size_t size = atoi(optarg);
+                if(size % 2 != 1)   size++;
+
+                maze.columns = size;
+                maze.rows = size;
+            } 
+            else 
+            {
+                std::cout << "Felaktigt argument: --size måste vara en integer." << std::endl;
+                return EXIT_FAILURE;  
+            }
         }
-        if(arg == 'c')  maze.columns = atoi(optarg);
-        if(arg == 'r')  maze.rows = atoi(optarg);
+        if(arg == 'c')  
+        {
+            if(validateArg(optarg))
+            {
+                size_t size = atoi(optarg);
+                if(size % 2 != 1)   size++;
+
+                maze.columns = size;
+            } 
+            else 
+            {
+                std::cout << "Felaktigt argument: --columns måste vara en integer." << std::endl;
+                return EXIT_FAILURE; 
+            } 
+        }
+        if(arg == 'r')  
+        {
+            if(validateArg(optarg))
+            {
+                size_t size = atoi(optarg);
+                if(size % 2 != 1)   size++;
+
+                maze.rows = size;
+            }   
+            else    
+            {
+                std::cout << "Felaktigt argument: --rows måste vara en integer." << std::endl;
+                return EXIT_FAILURE;
+            }
+        }
         if(arg == '?')  std::cout << "Felaktigt argument" << std::endl;
     }
 
-    //Generera
-    for(int i = 0; i <= maze.columns; i++)  //Loopar kolumner
-    {
-        std::vector<char> temp; //Temporär vektor att spara varje rad i 
-        int rndm;
-        if(i == 0 || i == maze.columns-1)   rndm = rand() % (maze.rows-2) + 1;  //Slumpa start/slut position
-        
-        for(int j = 0; j <= maze.rows; j++) //Loopar rader
-        {
-            if(j == 0 || j == maze.rows-1)    temp.push_back(maze.WALL);    //Första och sista raden ska vara solida väggar
-            else if(i == 0) //Om det är första kolumnen ska startpunkten skrivas
-            {
-                if(j == rndm)   temp.push_back(maze.START); //Om startpunkten är nådd skriv denna
-                else            temp.push_back(maze.WALL);  //Annars skriv vägg
-            }
-            else if(i == maze.columns-1)   //Om det är sista kolumnen ska slutpunkten skrivas
-            {
-                if(j == rndm)   temp.push_back(maze.END);   //Om slutpunkten är nådd skriv denna
-                else            temp.push_back(maze.WALL);  //Annars skriv vägg
-            }
-            else    //Annars slumpas vägg eller gång, har ska DFS-metoden senare tillämpas
-            {
-                int rndm = rand() % 2;
-                if(rndm % 2 == 0)   temp.push_back(maze.WALL);
-                else                temp.push_back(maze.PATH);
-            }
-        }
-        maze.maze.push_back(temp);  //Lägg till raden 
-    }
-
-    //Skriv ut
-    for(int i = 0; i < maze.columns; i++)  //Skriv ut
-    {
-        for(int j = 0; j < maze.rows; j++)
-            std::cout << maze.maze[j][i];
-        std::cout << std::endl;
-    }
+    maze.generateMaze();
+    maze.printMaze();
 
     return EXIT_SUCCESS;
 }
@@ -88,4 +94,14 @@ void printHelp()    //Skriver ut hjälptext
     std::cout << "\t(--output  | -o)file. Använd filen file för utdata. Annars cout." << std::endl;
     std::cout << "\t--check    | -b.      Skriver ut endast \"Solution found\" om en lösning finnes, annars \"Solution not found\"." << std::endl;
     std::cout << std::endl;
+}
+
+bool validateArg(char* optarg)
+{
+    std::string temp(optarg);   //Gör om char* till string
+    for(int i = 0; i < temp.size(); i++)
+        if(!isdigit(temp[i]))
+            return false;
+
+    return true;
 }
