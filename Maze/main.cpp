@@ -1,9 +1,7 @@
 #include "maze.h"
 #include <iostream>
 #include <unistd.h> //getopt
-#include <cstdlib> //atoi, srand
-#include <stack>
-#include <ctime>
+#include <cstdlib> //atoi
 
 
 void printHelp();   //Skriver ut hjälptext
@@ -11,13 +9,9 @@ void printHelp();   //Skriver ut hjälptext
 bool validateArg(char* optarg);
 
 int main(int argc, char* argv[])
-{
-    srand(time(NULL));
-    
+{    
     Maze maze;
     
-    //std::stack<char> path;
-
     int arg;
     while ((arg = getopt(argc, argv, "hvs: c: r:")) != -1)
     {
@@ -87,9 +81,9 @@ void printHelp()    //Skriver ut hjälptext
     std::cout << std::endl;
     std::cout << "\t--version  | -v.      Skriver ut versionsnummer." << std::endl;
     std::cout << "\t--help     | -h.      Skriver ut tillgängliga argument." << std::endl;
-    std::cout << "\t(--size    | -s)N.    Skapa en labyrint med storleken N. Defaultvärde: 100." << std::endl;
-    std::cout << "\t(--columns | -c)W.    Skapa en labyrint med bredden W. Defaultvärde: 100." << std::endl;
-    std::cout << "\t(--rows    | -r)H.    Skapa en labyrint med höjden N. Defaultvärde: 100." << std::endl;
+    std::cout << "\t(--size    | -s)N.    Skapa en labyrint med storleken N. Är talet jämnt ökas det med 1. Defaultvärde: 99." << std::endl;
+    std::cout << "\t(--columns | -c)W.    Skapa en labyrint med bredden W. Är talet jämnt ökas det med 1. Defaultvärde: 99." << std::endl;
+    std::cout << "\t(--rows    | -r)H.    Skapa en labyrint med höjden N. Är talet jämnt ökas det med 1. Defaultvärde: 99." << std::endl;
     std::cout << "\t(--input   | -i)file. Använd filen file som indata." << std::endl;
     std::cout << "\t(--output  | -o)file. Använd filen file för utdata. Annars cout." << std::endl;
     std::cout << "\t--check    | -b.      Skriver ut endast \"Solution found\" om en lösning finnes, annars \"Solution not found\"." << std::endl;
@@ -99,9 +93,9 @@ void printHelp()    //Skriver ut hjälptext
 bool validateArg(char* optarg)
 {
     std::string temp(optarg);   //Gör om char* till string
-    for(int i = 0; i < temp.size(); i++)
-        if(!isdigit(temp[i]))
-            return false;
+    
+    for(int i = 0; i < temp.size(); i++)    //Loopa igenom samtliga
+        if(!isdigit(temp[i]))   return false;   //Returnera false om något som inte är en siffra hittas
 
-    return true;
+    return true;    //Om den tar sig igenom hela loopen är samtliga elemenet integers
 }
