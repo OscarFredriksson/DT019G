@@ -26,7 +26,6 @@ int main(int argc, char* argv[])
             if(validateArg(optarg))
             {
                 size_t size = atoi(optarg);
-                if(size % 2 != 1)   size++;
 
                 maze.columns = size;
                 maze.rows = size;
