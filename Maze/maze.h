@@ -22,11 +22,14 @@ private:
     
     struct node 
     {
-        node(bool wall, bool visited = false)
-        : wall(wall), visited(visited) {};
+        node(int x, int y, bool wall, bool visited = false)
+        : x(x), y(y), wall(wall), visited(visited) 
+        {
+            if(wall)    visited = true;
+        };
 
-        bool wall;
-        bool visited;
+        int x, y;
+        bool wall, visited;
     };
 
     std::vector<std::vector<node>> maze;
