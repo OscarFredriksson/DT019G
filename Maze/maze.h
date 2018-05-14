@@ -15,25 +15,18 @@ class Maze
     void printMaze();
 
 private:
-    /*const std::string y_WALL = "*";
-    const std::string x_WALL = "***";
-    const std::string PATH = "   ";*/
     const char PATH = ' ';
     const char WALL = '*';
     const char START = 'S';
     const char END = 'X';
     
-    /*std::vector<std::vector<std::string>> maze;
-    std::vector<std::vector<bool>> path;*/
     struct node 
     {
-        node(int x, int y, bool visited = false)
-        : x(x), y(y), visited(visited) {};
+        node(bool wall, bool visited = false)
+        : wall(wall), visited(visited) {};
 
-        int x, y;
+        bool wall;
         bool visited;
-
-        bool leftWall, rightWall, upWall, downWall = false;
     };
 
     std::vector<std::vector<node>> maze;
