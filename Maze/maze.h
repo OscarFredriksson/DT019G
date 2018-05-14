@@ -31,6 +31,8 @@ private:
         int x, y;
         bool wall, visited;
     };
-
     std::vector<std::vector<node>> maze;
+    
+    std::vector<node> getNeighbours(node P);
+
 };
