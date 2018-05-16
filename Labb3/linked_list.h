@@ -56,8 +56,8 @@ private:
             :value(value), next(next), prev(prev) {};  
         
         double value;   //Nodens data
-        node_t * next;  //Nästa element i listan?
-        node_t * prev;  //Föregående element i listan?
+        node_t * next;  //Nästa element i listan
+        node_t * prev;  //Föregående element i listan
     };
 
     node_t * head = 0;  //Första positionen i listan
