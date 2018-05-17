@@ -1,8 +1,7 @@
 #include <vector>
 #include <cstddef>  //size_t
 #include <iostream>
-#include <cstdlib> //srand
-#include <ctime>
+
 
 class Maze
 {

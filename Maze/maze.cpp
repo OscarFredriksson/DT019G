@@ -1,6 +1,9 @@
 #include "maze.h"
 #include <stack>
-#include <unistd.h>
+#include <cstdlib> //srand
+#include <ctime>    //time
+#include <chrono>
+#include <thread>
 
 void Maze::fillMaze()
 {
@@ -17,13 +20,11 @@ void Maze::fillMaze()
             }
             else if(i == columns-1)   //Om det är sista kolumnen ska slutpunkten skrivas
             {
-                if(j == rows-2)   temp.push_back(node(i, j));   //Om slutpunkten är nådd skriv denna
-                else                temp.push_back(node(i, j, true));  //Annars skriv vägg (vertikal vägg)
+                if(j == rows-2) temp.push_back(node(i, j));   //Om slutpunkten är nådd skriv denna
+                else            temp.push_back(node(i, j, true));  //Annars skriv vägg (vertikal vägg)
             }
-            else if(i % 2 == 0 || j % 2 == 0) 
-                temp.push_back(node(i, j, true)); 
-            else                
-                temp.push_back(node(i, j)); 
+            else if(i % 2 == 0 || j % 2 == 0)   temp.push_back(node(i, j, true));   //Skriv vägg
+            else                                temp.push_back(node(i, j))  //Annars skriv gång
         }
         maze.push_back(temp);  //Lägg till raden 
     } 
@@ -67,7 +68,7 @@ void Maze::generateMaze()
             
             system("clear");
             std::cout << *this << std::endl;
-            usleep(50000);          
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));         
         }
     }
 }
