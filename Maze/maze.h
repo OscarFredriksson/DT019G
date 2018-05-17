@@ -12,7 +12,9 @@ class Maze
     
     void fillMaze();
     void generateMaze();
-    void printMaze();
+    //void printMaze();
+    friend std::ostream& operator<<(std::ostream& os, const Maze & maze);
+
 
 private:
     const char PATH = ' ';
@@ -22,10 +24,18 @@ private:
     
     struct node 
     {
-        node(int x, int y, bool wall, bool visited = false)
-        : x(x), y(y), wall(wall), visited(visited) 
+        node(const node & src)
+        {
+            x = src.x;
+            y = src.y;
+            wall = src.wall;
+            visited = src.visited;
+        };
+        node(int x, int y, bool wall)
+        : x(x), y(y), wall(wall)
         {
             if(wall)    visited = true;
+            else        visited = false;
         };
 
         int x, y;
@@ -33,6 +43,7 @@ private:
     };
     std::vector<std::vector<node>> maze;
     
-    std::vector<node> getNeighbours(node P);
+    std::vector<node*> getNeighbours(node * P);
+
 
 };

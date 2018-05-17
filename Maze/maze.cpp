@@ -35,73 +35,84 @@ void Maze::generateMaze()
     
     fillMaze(); //Fyller vektorerna med väggar
 
-    std::stack<node> nodes;
+    std::stack<node*> nodes;
 
     maze[1][1].visited = true;
-    nodes.push(maze[1][1]);
+    node * temp = &maze[1][1];
+    //node * temp = new node(maze[1][1]);
+    nodes.push(temp);
 
-    for(int i = 1, j = 1, k = 0; k < 10000;k++)
+    
+    for(int i = 1, j = 1, k = 0; !nodes.empty();k++)
     {
-        node prev = nodes.top();
-
-        std::vector<node> neighbours = getNeighbours(maze[i][j]);
+        std::vector<Maze::node*> neighbours = getNeighbours(&maze[i][j]);
         
-        if(neighbours.empty()) 
+        if(neighbours.empty())  nodes.pop();    //Om den inte hittar några obesökta grannar, poppa stacken och prova igen
+        else
         {
-            while(nodes.top().visited)  
-            {
-                //std::cout << "Grannar!" << std::endl;
-                prev = nodes.top();
-                nodes.pop();
-                //std::cout << "storlek: " << nodes.size() << std::endl;
-            }
-        }
-        while(!neighbours.empty())
-        {
-            int rndm = rand() % neighbours.size();
-            nodes.push(neighbours[rndm]);
-            neighbours.erase(neighbours.begin() + rndm);
-        }
-        
-        node P = nodes.top();
-        if(!P.visited)
-        {
-            nodes.top().visited = true;
-            maze[P.x][P.y].visited = true;
+            node * prev = nodes.top();  //Spara föregående nod
 
-            //std::cout << prev.x << prev.y << prev.visited << std::endl;
-            //std::cout << P.x << P.y << P.visited << std::endl;
+            nodes.push(neighbours[rand() % neighbours.size()]); //Lägg till en slumpad granne till stacken
+
+            node * P = nodes.top(); //Spara den slumpade grannen för enkelhetens skull
+
+            P->visited = true;  //Sätt den som besökt
 
             //Testar samtliga kombinationer av väggar som ska tas bort
-            if(P.x == prev.x && P.y > prev.y)   maze[P.x][P.y-1].wall = false;
-            if(P.x == prev.x && P.y < prev.y)   maze[P.x][P.y+1].wall = false;
-            if(P.y == prev.y && P.x > prev.x)   maze[P.x-1][P.y].wall = false;
-            if(P.y == prev.y && P.x < prev.x)   maze[P.x+1][P.y].wall = false;
-            
-            i = P.x;
-            j = P.y;
-        }
-        //std::cout << nodes.top().x << nodes.top().y << nodes.top().visited << std::endl;
-        std::cin.get();
-        system("clear");
-        std::cout << "Varv " << k << ":" << std::endl; 
-        printMaze();
-        //std::cout << nodes.size() << std::endl;
-    }
+            if(P->x == prev->x && P->y > prev->y)   maze[P->x][P->y-1].wall = false;
+        
+            if(P->x == prev->x && P->y < prev->y)   maze[P->x][P->y+1].wall = false;
 
+            if(P->y == prev->y && P->x > prev->x)   maze[P->x-1][P->y].wall = false;
+            
+            if(P->y == prev->y && P->x < prev->x)   maze[P->x+1][P->y].wall = false;
+                   
+        }
+        if(!nodes.empty())
+        {
+            i = nodes.top()->x;
+            j = nodes.top()->y;
+        }
+        system("clear");
+        //std::cout << *this << std::endl;
+        //usleep(50000);
+
+    }
+    std::cout << *this << std::endl;
 }
 
-std::vector<Maze::node> Maze::getNeighbours(node P)
+std::vector<Maze::node*> Maze::getNeighbours(node * P)
 {
-    std::vector <node> temp;
-    if(P.x > 1                  && !maze[P.x-2][P.y].visited)   temp.push_back(maze[P.x-2][P.y]);    
-    if(P.x < maze.size()-2      && !maze[P.x+2][P.y].visited)   temp.push_back(maze[P.x+2][P.y]);
-    if(P.y > 1                  && !maze[P.x][P.y-2].visited)   temp.push_back(maze[P.x][P.y-2]);
-    if(P.y < maze[0].size()-2   && !maze[P.x][P.y+2].visited)   temp.push_back(maze[P.x][P.y+2]);
+    std::vector <node*> temp;
+    if(P->x > 1                  && !maze[P->x-2][P->y].visited)   temp.push_back(&maze[P->x-2][P->y]);    
+    if(P->x < maze.size()-2      && !maze[P->x+2][P->y].visited)   temp.push_back(&maze[P->x+2][P->y]);
+    if(P->y > 1                  && !maze[P->x][P->y-2].visited)   temp.push_back(&maze[P->x][P->y-2]);
+    if(P->y < maze[0].size()-2   && !maze[P->x][P->y+2].visited)   temp.push_back(&maze[P->x][P->y+2]);
     return temp;
 }
 
-void Maze::printMaze()  //Skriv ut
+std::ostream& operator<<(std::ostream& os, const Maze & maze)
+{
+    for(int i = 0; i < maze.maze[0].size(); i++) //Loopar rader
+    {
+        for(int j = 0; j < maze.maze.size(); j++)    //Loopar kolumner
+        {
+            if(j == 0 && i == 1)    std::cout << maze.START;
+            else if(j == maze.maze.size()-1 && i == maze.maze[0].size()-2) std::cout << maze.END;
+            else if(maze.maze[j][i].wall == true) 
+            {
+                if(j % 2 == 1)  std::cout << maze.WALL << maze.WALL << maze.WALL;
+                else            std::cout << maze.WALL;
+            }
+            else if(j % 2 == 0) std::cout << maze.PATH;    
+            else                std::cout << maze.PATH << maze.PATH << maze.PATH;
+        }
+        std::cout << std::endl;
+    }
+    return os;
+}
+
+/*void Maze::printMaze()  //Skriv ut
 {    
     for(int i = 0; i < maze[0].size(); i++) //Loopar rader
     {
@@ -119,4 +130,13 @@ void Maze::printMaze()  //Skriv ut
         }
         std::cout << std::endl;
     }
-}
+
+    for(int i = 0; i < maze[0].size(); i++) //Loopar rader
+    {
+        for(int j = 0; j < maze.size(); j++)    //Loopar kolumner
+        {
+            std::cout << maze[j][i].visited;
+        }
+        std::cout << std::endl;
+    }
+}*/

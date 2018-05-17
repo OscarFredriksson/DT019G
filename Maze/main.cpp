@@ -70,7 +70,6 @@ int main(int argc, char* argv[])
     }
 
     maze.generateMaze();
-    maze.printMaze();
 
     return EXIT_SUCCESS;
 }
