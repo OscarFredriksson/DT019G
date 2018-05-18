@@ -24,7 +24,7 @@ void Maze::fillMaze()
                 else            temp.push_back(node(i, j, true));  //Annars skriv vägg (vertikal vägg)
             }
             else if(i % 2 == 0 || j % 2 == 0)   temp.push_back(node(i, j, true));   //Skriv vägg
-            else                                temp.push_back(node(i, j))  //Annars skriv gång
+            else                                temp.push_back(node(i, j));  //Annars skriv gång
         }
         maze.push_back(temp);  //Lägg till raden 
     } 
