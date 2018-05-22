@@ -15,7 +15,7 @@ void Maze::fillMaze()
         {            
             if(i == 0) //Om det är första kolumnen ska startpunkten skrivas
             {
-                if(j == 1 || j == rows-2)   temp.push_back(node(i, j)); //Om startpunkten är nådd skriv denna
+                if(j == 1)   temp.push_back(node(i, j)); //Om startpunkten är nådd skriv denna
                 else                        temp.push_back(node(i, j, true));  //Annars skriv vägg (vertikal vägg)
             }
             else if(i == cols-1)   //Om det är sista kolumnen ska slutpunkten skrivas
