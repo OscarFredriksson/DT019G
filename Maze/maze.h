@@ -6,8 +6,8 @@
 class Maze
 {
     public:
-    size_t columns = 99;
-    size_t rows = 99;
+    size_t cols = 10;
+    size_t rows = 10;
     
     void fillMaze();
     void generateMaze();

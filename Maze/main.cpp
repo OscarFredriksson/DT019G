@@ -1,5 +1,4 @@
 #include "maze.h"
-#include <iostream>
 #include <unistd.h> //getopt
 #include <cstdlib> //atoi
 
@@ -27,7 +26,7 @@ int main(int argc, char* argv[])
             {
                 size_t size = atoi(optarg);
 
-                maze.columns = size;
+                maze.cols = size;
                 maze.rows = size;
             } 
             else 
@@ -43,7 +42,7 @@ int main(int argc, char* argv[])
                 size_t size = atoi(optarg);
                 if(size % 2 != 1)   size++;
 
-                maze.columns = size;
+                maze.cols = size;
             } 
             else 
             {
@@ -77,10 +76,10 @@ void printHelp()    //Skriver ut hjälptext
 {
     std::cout << std::endl;
     std::cout << "\t--version  | -v.      Skriver ut versionsnummer." << std::endl;
-    std::cout << "\t--help     | -h.      Skriver ut tillgängliga argument." << std::endl;
-    std::cout << "\t(--size    | -s)N.    Skapa en labyrint med storleken N. Är talet jämnt ökas det med 1. Defaultvärde: 99." << std::endl;
-    std::cout << "\t(--columns | -c)W.    Skapa en labyrint med bredden W. Är talet jämnt ökas det med 1. Defaultvärde: 99." << std::endl;
-    std::cout << "\t(--rows    | -r)H.    Skapa en labyrint med höjden N. Är talet jämnt ökas det med 1. Defaultvärde: 99." << std::endl;
+    std::cout << "\t--help     | -h.      Skriver ut detta." << std::endl;
+    std::cout << "\t(--size    | -s)N.    Skapa en labyrint med storleken N. Defaultvärde: 10." << std::endl;
+    std::cout << "\t(--columns | -c)W.    Skapa en labyrint med bredden W.   Defaultvärde: 10." << std::endl;
+    std::cout << "\t(--rows    | -r)H.    Skapa en labyrint med höjden N.    Defaultvärde: 10." << std::endl;
     std::cout << "\t(--input   | -i)file. Använd filen file som indata." << std::endl;
     std::cout << "\t(--output  | -o)file. Använd filen file för utdata. Annars cout." << std::endl;
     std::cout << "\t--check    | -b.      Skriver ut endast \"Solution found\" om en lösning finnes, annars \"Solution not found\"." << std::endl;

@@ -7,7 +7,7 @@
 
 void Maze::fillMaze()
 {
-    for(int i = 0; i < columns; i++)  //Loopar kolumner
+    for(int i = 0; i < cols; i++)  //Loopar kolumner
     {
         std::vector<node> temp; //Temporär vektor att spara varje rad i 
                 
@@ -15,10 +15,10 @@ void Maze::fillMaze()
         {            
             if(i == 0) //Om det är första kolumnen ska startpunkten skrivas
             {
-                if(j == 1)  temp.push_back(node(i, j)); //Om startpunkten är nådd skriv denna
-                else        temp.push_back(node(i, j, true));  //Annars skriv vägg (vertikal vägg)
+                if(j == 1 || j == rows-2)   temp.push_back(node(i, j)); //Om startpunkten är nådd skriv denna
+                else                        temp.push_back(node(i, j, true));  //Annars skriv vägg (vertikal vägg)
             }
-            else if(i == columns-1)   //Om det är sista kolumnen ska slutpunkten skrivas
+            else if(i == cols-1)   //Om det är sista kolumnen ska slutpunkten skrivas
             {
                 if(j == rows-2) temp.push_back(node(i, j));   //Om slutpunkten är nådd skriv denna
                 else            temp.push_back(node(i, j, true));  //Annars skriv vägg (vertikal vägg)
@@ -26,7 +26,7 @@ void Maze::fillMaze()
             else if(i % 2 == 0 || j % 2 == 0)   temp.push_back(node(i, j, true));   //Skriv vägg
             else                                temp.push_back(node(i, j));  //Annars skriv gång
         }
-        maze.push_back(temp);  //Lägg till raden 
+        maze.push_back(temp);  //Lägg till raden
     } 
 }
 
@@ -35,7 +35,7 @@ void Maze::generateMaze()
     srand(time(NULL));
     
     rows = 2*rows+1;    //Omvandla rader och kolumner till "rätt" värden
-    columns = 2*columns+1;
+    cols = 2*cols+1;
 
     fillMaze(); //Fyller vektorerna med väggar
 
