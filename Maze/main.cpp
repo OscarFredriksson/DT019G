@@ -69,6 +69,7 @@ int main(int argc, char* argv[])
     }
 
     maze.generateMaze();
+    //std::cout << maze << std::endl;
     return EXIT_SUCCESS;
 }
 

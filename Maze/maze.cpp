@@ -7,27 +7,22 @@
 
 void Maze::fillMaze()
 {
+    srand(time(NULL));
     for(int i = 0; i < cols; i++)  //Loopar kolumner
     {
         std::vector<node> temp; //Temporär vektor att spara varje rad i 
                 
+        int rndm_start = 2 * (rand() % rows/2) + 1;   //Slumpa ett udda tal för startpunkten
+        int rndm_end = 2 * (rand() % rows/2) + 1;   //Slumpa ett udda tal för slutpunkten
         for(int j = 0; j < rows; j++) //Loopar rader
         {            
-            if(i == 0) //Om det är första kolumnen ska startpunkten skrivas
-            {
-                if(j == 1)   temp.push_back(node(i, j)); //Om startpunkten är nådd skriv denna
-                else                        temp.push_back(node(i, j, true));  //Annars skriv vägg (vertikal vägg)
-            }
-            else if(i == cols-1)   //Om det är sista kolumnen ska slutpunkten skrivas
-            {
-                if(j == rows-2) temp.push_back(node(i, j));   //Om slutpunkten är nådd skriv denna
-                else            temp.push_back(node(i, j, true));  //Annars skriv vägg (vertikal vägg)
-            }
-            else if(i % 2 == 0 || j % 2 == 0)   temp.push_back(node(i, j, true));   //Skriv vägg
+            if(i == 0 && j == rndm_start)              temp.push_back(node(i, j));    //Om startpunkten är nådd skriv denna
+            else if(i == cols-1 && j == rndm_end) temp.push_back(node(i, j));   //Om slutpunkten är nådd skriv denna
+            else if(i % 2 == 0 || j % 2 == 0)   temp.push_back(node(i, j, true));   //Om antalet rader eller kolumner är jämnt, skriv vägg
             else                                temp.push_back(node(i, j));  //Annars skriv gång
         }
         maze.push_back(temp);  //Lägg till raden
-    } 
+    }
 }
 
 void Maze::generateMaze()
@@ -92,9 +87,9 @@ std::ostream& operator<<(std::ostream& os, const Maze & maze)
     {
         for(int j = 0; j < maze.maze.size(); j++)    //Loopar kolumner
         {
-            if(j == 0 && i == 1)    std::cout << maze.START;
-            else if(j == maze.maze.size()-1 && i == maze.maze[0].size()-2) std::cout << maze.END;
-            else if(maze.maze[j][i].wall == true) 
+            //if(j == 0 && !maze.maze[j][i].wall)    std::cout << maze.START;
+            //else if(j == maze.maze.size()-1 && !maze.maze[j][i].wall) std::cout << maze.END;
+            if(maze.maze[j][i].wall == true) 
             {
                 if(j % 2 == 1)  std::cout << maze.WALL << maze.WALL << maze.WALL;
                 else            std::cout << maze.WALL;
@@ -105,5 +100,10 @@ std::ostream& operator<<(std::ostream& os, const Maze & maze)
         std::cout << std::endl;
     }
     return os;
+}
+
+void loadMaze()
+{
+
 }
 

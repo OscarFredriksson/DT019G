@@ -12,6 +12,7 @@ class Maze
     void fillMaze();
     void generateMaze();
     friend std::ostream& operator<<(std::ostream& os, const Maze & maze);
+    void loadMaze();
 
 private:
     const char PATH = ' ';
@@ -31,8 +32,6 @@ private:
         node(int x, int y, bool wall = false)
         : x(x), y(y), wall(wall)
         {
-            //if(wall)    visited = true;
-            //else        visited = false;
             visited = false;
         };
 
