@@ -2,7 +2,6 @@
 #include <cstddef>  //size_t
 #include <iostream>
 
-
 class Maze
 {
     public:
@@ -41,6 +40,5 @@ private:
     std::vector<std::vector<node>> maze;
     
     std::vector<node> getNeighbours(node P);
-
 
 };

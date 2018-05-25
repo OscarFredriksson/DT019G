@@ -1,6 +1,7 @@
 #include "maze.h"
 #include <unistd.h> //getopt
 #include <cstdlib> //atoi
+#include <fstream>
 
 
 void printHelp();   //Skriver ut hjälptext
@@ -11,8 +12,11 @@ int main(int argc, char* argv[])
 {    
     Maze maze;
     
+    std::string filename;
+    bool writeToFile = false;
+    
     int arg;
-    while ((arg = getopt(argc, argv, "hvs: c: r:")) != -1)
+    while ((arg = getopt(argc, argv, "hvs: c: r: o:")) != -1)
     {
         if(arg == 'v')    std::cout << "Version 1.0" << std::endl;
         if(arg == 'h')
@@ -65,11 +69,26 @@ int main(int argc, char* argv[])
                 return EXIT_FAILURE;
             }
         }
-        if(arg == '?')  std::cout << "Felaktigt argument" << std::endl;
+        if(arg == 'o')  
+        {
+            writeToFile = true;
+            filename = std::string(optarg);
+        }
+        if(arg == '?')  
+        {
+            std::cout << "Felaktigt argument" << std::endl;
+            return EXIT_FAILURE;
+        }
     }
-
     maze.generateMaze();
-    //std::cout << maze << std::endl;
+
+    if(writeToFile)
+    {
+        std::ofstream output(filename.c_str());
+        output << maze << std::endl;
+    }
+    else    std::cout << maze << std::endl;
+    
     return EXIT_SUCCESS;
 }
 
