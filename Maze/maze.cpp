@@ -9,18 +9,20 @@ void Maze::fillMaze()
 {
     srand(time(NULL));
 
-    for(int i = 0; i < cols; i++)  //Loopar kolumner
+    for(int i = 0; i < rows; i++)  //Loopar kolumner
     {
         std::vector<node> temp; //Temporär vektor att spara varje rad i 
                 
         int rndm = 2 * (rand() % rows/2) + 1;   //Slumpa ett udda tal för slutpunkten
         
-        for(int j = 0; j < rows; j++) //Loopar rader
+        //int rndm = rows-2;
+
+        for(int j = 0; j < cols; j++) //Loopar rader
         {            
-            if(i == 0 && j == 1)                    temp.push_back(node(i, j));         //Om startpunkten är nådd skriv denna
-            else if(i == cols-1 && j == rndm)       temp.push_back(node(i, j));         //Om slutpunkten är nådd skriv denna
-            else if(i % 2 == 0 || j % 2 == 0)       temp.push_back(node(i, j, true));   //Om antalet rader eller kolumner är jämnt, skriv vägg
-            else                                    temp.push_back(node(i, j));         //Annars skriv gång
+            if(j == 0 && i == 1)                    temp.push_back(node(j, i));         //Om startpunkten är nådd skriv denna
+            else if(j == cols-1 && i == rndm)       temp.push_back(node(j, i));         //Om slutpunkten är nådd skriv denna
+            else if(j % 2 == 0 || i % 2 == 0)       temp.push_back(node(j, i, true));   //Om antalet rader eller kolumner är jämnt, skriv vägg
+            else                                    temp.push_back(node(j, i));         //Annars skriv gång
         }
         maze.push_back(temp);  //Lägg till raden
     }
@@ -34,6 +36,8 @@ void Maze::generateMaze()
     cols = 2*cols+1;
 
     fillMaze(); //Fyller vektorerna med väggar
+
+
 
     std::stack<node> nodes;
 
@@ -54,17 +58,17 @@ void Maze::generateMaze()
 
             node P = nodes.top(); //Spara den slumpade grannen för enkelhetens skull
 
-            maze[P.x][P.y].visited = true;   //Sätt den slumpade grannen som besökt
+            maze[P.y][P.x].visited = true;   //Sätt den slumpade grannen som besökt
 
             //Testar samtliga kombinationer av väggar som ska tas bort
-            if(P.x == prev.x && P.y > prev.y)   maze[P.x][P.y-1].wall = false;
-            if(P.x == prev.x && P.y < prev.y)   maze[P.x][P.y+1].wall = false;
-            if(P.y == prev.y && P.x > prev.x)   maze[P.x-1][P.y].wall = false;
-            if(P.y == prev.y && P.x < prev.x)   maze[P.x+1][P.y].wall = false;
+            if(P.x == prev.x && P.y > prev.y)   maze[P.y-1][P.x].wall = false;
+            if(P.x == prev.x && P.y < prev.y)   maze[P.y+1][P.x].wall = false;
+            if(P.y == prev.y && P.x > prev.x)   maze[P.y][P.x-1].wall = false;
+            if(P.y == prev.y && P.x < prev.x)   maze[P.y][P.x+1].wall = false;
             
-            system("clear");
+            /*system("clear");
             std::cout << *this << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(5));         
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));*/         
         }
     }
 }
@@ -74,23 +78,23 @@ std::vector<Maze::node> Maze::getNeighbours(node P) //Hämtar alla obesökta gra
     std::vector <node> temp;    //Skapa en temporär vektor att spara alla hittade grannar i 
     
     //Går igenom alla grannar, är den inte besökt och inom ramarna, lägg till den i vektorn
-    if(P.x > 1                  && !maze[P.x-2][P.y].visited)   temp.push_back(maze[P.x-2][P.y]);   //Kollar grannen till vänster   
-    if(P.x < maze.size()-2      && !maze[P.x+2][P.y].visited)   temp.push_back(maze[P.x+2][P.y]);   //Kollar grannen till höger 
-    if(P.y > 1                  && !maze[P.x][P.y-2].visited)   temp.push_back(maze[P.x][P.y-2]);   //Kollar grannen uppåt
-    if(P.y < maze[0].size()-2   && !maze[P.x][P.y+2].visited)   temp.push_back(maze[P.x][P.y+2]);   //Kollar grannen nedåt
+    if(P.x > 1                  && !maze[P.y][P.x-2].visited)   temp.push_back(maze[P.y][P.x-2]);   //Kollar grannen till vänster   
+    if(P.x < maze[0].size()-2   && !maze[P.y][P.x+2].visited)   temp.push_back(maze[P.y][P.x+2]);   //Kollar grannen till höger 
+    if(P.y > 1                  && !maze[P.y-2][P.x].visited)   temp.push_back(maze[P.y-2][P.x]);   //Kollar grannen ovanför
+    if(P.y < maze.size()-2      && !maze[P.y+2][P.x].visited)   temp.push_back(maze[P.y+2][P.x]);   //Kollar grannen under
     
     return temp;
 }
 
 std::ostream& operator<<(std::ostream& os, const Maze & maze)
 {
-    for(int i = 0; i < maze.maze[0].size(); i++) //Loopar rader
+    for(int i = 0; i < maze.maze.size(); i++) //Loopar igenom alla rader
     {
-        for(int j = 0; j < maze.maze.size(); j++)    //Loopar kolumner
+        for(int j = 0; j < maze.maze[0].size(); j++)    //Loopar igenom alla kolumner
         {
             //if(j == 0 && !maze.maze[j][i].wall)                         std::cout << maze.START;
             //else if(j == maze.maze.size()-1 && !maze.maze[j][i].wall)   std::cout << maze.END;
-            if(maze.maze[j][i].wall == true) 
+            if(maze.maze[i][j].wall == true) 
             {
                 if(j % 2 == 1)  os << maze.WALL << maze.WALL << maze.WALL;
                 else            os << maze.WALL;
@@ -103,9 +107,40 @@ std::ostream& operator<<(std::ostream& os, const Maze & maze)
     return os;
 }
 
-void loadMaze()
+std::istream& operator>>(std::istream& is, Maze & maze)
 {
-    std::vector<std::vector<std::string>> maze;
+    std::string temp_row;
+    for(int i = 0; std::getline(is, temp_row); i++)    //Rader
+    {
+        if(temp_row != "")
+        {
+            std::vector<Maze::node> row;
+            for(int j = 0; j < temp_row.size(); j++) //Kolumner
+            {
+                if(j % 2 == 1) j+=2;    //Om det är en udda kolumn finns det tre st tecken för denna, skippa till nästa kolumn
 
+                if      (temp_row[j] == '*') row.push_back(Maze::node(i, j, true));
+                else if (temp_row[j] == ' ') row.push_back(Maze::node(i, j));                
+            }
+            maze.maze.push_back(row);
+        }
+    }
+    return is;
 }
 
+void Maze::resetVisitedNodes()
+{
+    for(int i = 0; i < rows; i++)
+        for(int j = 0; j < cols; j++)
+            if(maze[i][j].visited == true)
+                maze[i][j].visited == true;
+}
+
+void Maze::solveMaze()
+{
+    std::stack<node> nodes;
+    while(nodes.top().x != maze.size()-2)
+    {
+
+    }
+}

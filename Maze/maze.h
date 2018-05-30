@@ -11,7 +11,8 @@ class Maze
     void fillMaze();
     void generateMaze();
     friend std::ostream& operator<<(std::ostream& os, const Maze & maze);
-    void loadMaze();
+    friend std::istream& operator>>(std::istream& is, Maze & maze);
+    void solveMaze();
 
 private:
     const char PATH = ' ';

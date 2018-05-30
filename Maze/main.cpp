@@ -2,7 +2,7 @@
 #include <unistd.h> //getopt
 #include <cstdlib> //atoi
 #include <fstream>
-
+#include <string>
 
 void printHelp();   //Skriver ut hjälptext
 
@@ -13,18 +13,19 @@ int main(int argc, char* argv[])
     Maze maze;
     
     std::string filename;
-    bool writeToFile = false;
+    bool writeToFile = false;   //Om det ska skrivas till filen eller inte
+    bool readFromFile = false;
     
     int arg;
-    while ((arg = getopt(argc, argv, "hvs: c: r: o:")) != -1)
+    while ((arg = getopt(argc, argv, "hvs: c: r: o: i:")) != -1)   //Loopa igenom alla argument
     {
-        if(arg == 'v')    std::cout << "Version 1.0" << std::endl;
-        if(arg == 'h')
+        if(arg == 'v')    std::cout << "Version 1.0" << std::endl;  //Skriv ut version
+        else if(arg == 'h')
         { 
             printHelp();    
             return EXIT_SUCCESS;   
         }
-        if(arg == 's')
+        else if(arg == 's')
         {
             if(validateArg(optarg))
             {
@@ -39,7 +40,7 @@ int main(int argc, char* argv[])
                 return EXIT_FAILURE;  
             }
         }
-        if(arg == 'c')  
+        else if(arg == 'c')  
         {
             if(validateArg(optarg))
             {
@@ -54,7 +55,7 @@ int main(int argc, char* argv[])
                 return EXIT_FAILURE; 
             } 
         }
-        if(arg == 'r')  
+        else if(arg == 'r')  
         {
             if(validateArg(optarg))
             {
@@ -69,27 +70,44 @@ int main(int argc, char* argv[])
                 return EXIT_FAILURE;
             }
         }
-        if(arg == 'o')  
+        else if(arg == 'i')  //Om flaggan för utdata till en fil istället för cout
+        {
+            readFromFile = true;
+            filename = std::string(optarg); //Spara filnamnet
+        }
+        else if(arg == 'o')  //Om flaggan för utdata till en fil istället för cout
         {
             writeToFile = true;
-            filename = std::string(optarg);
+            filename = std::string(optarg); //Spara filnamnet
         }
-        if(arg == '?')  
+        else if(arg == '?')  
         {
             std::cout << "Felaktigt argument" << std::endl;
             return EXIT_FAILURE;
         }
     }
-    maze.generateMaze();
-
-    if(writeToFile)
+    if(readFromFile)
     {
-        std::ofstream output(filename.c_str());
-        output << maze << std::endl;
+        std::ifstream input(filename.c_str());
+        Maze solve;
+        input >> solve;
+        
+        std::cout << solve << std::endl;
     }
-    else    std::cout << maze << std::endl;
+    else
+    {
+        maze.generateMaze();
+
+        if(writeToFile) //Om det ska skrivas till filen
+        {
+            std::ofstream output(filename.c_str()); //Öppna filen med filnamnet
+            output << maze << std::endl;    //Skriv labyrinten till den
+        }
+        //else    
+        std::cout << maze << std::endl;
+    }
     
-    return EXIT_SUCCESS;
+    return EXIT_SUCCESS;    //Om den tar sig igenom hela koden utan problem, returnera att körningen gick bra
 }
 
 void printHelp()    //Skriver ut hjälptext
