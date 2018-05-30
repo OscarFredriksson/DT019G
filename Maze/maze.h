@@ -13,6 +13,7 @@ class Maze
     friend std::ostream& operator<<(std::ostream& os, const Maze & maze);
     friend std::istream& operator>>(std::istream& is, Maze & maze);
     void solveMaze();
+    void resetVisitedNodes();
 
 private:
     const char PATH = ' ';
