@@ -73,12 +73,13 @@ void Maze::generateMaze()
     }
 }
 
+//NÅTT ÄR FEL HÄR I NÅNSTANS, VET EJ VART
 std::vector<Maze::node> Maze::getNeighbours(node P) //Hämtar alla obesökta grannar till en given nod
 {
     std::vector <node> temp;    //Skapa en temporär vektor att spara alla hittade grannar i 
     
     //Går igenom alla grannar, är den inte besökt och inom ramarna, lägg till den i vektorn
-    if(P.x > 1                  && !maze[P.y][P.x-2].visited)   temp.push_back(maze[P.y][P.x-2]);   //Kollar grannen till vänster   
+    if(P.x > 1                  && !maze[P.y][P.x-2].visited)   temp.push_back(maze[P.y][P.x-2]);   //Kollar grannen till vänster 
     if(P.x < maze[0].size()-2   && !maze[P.y][P.x+2].visited)   temp.push_back(maze[P.y][P.x+2]);   //Kollar grannen till höger 
     if(P.y > 1                  && !maze[P.y-2][P.x].visited)   temp.push_back(maze[P.y-2][P.x]);   //Kollar grannen ovanför
     if(P.y < maze.size()-2      && !maze[P.y+2][P.x].visited)   temp.push_back(maze[P.y+2][P.x]);   //Kollar grannen under
@@ -94,7 +95,12 @@ std::ostream& operator<<(std::ostream& os, const Maze & maze)
         {
             //if(j == 0 && !maze.maze[j][i].wall)                         std::cout << maze.START;
             //else if(j == maze.maze.size()-1 && !maze.maze[j][i].wall)   std::cout << maze.END;
-            if(maze.maze[i][j].wall == true) 
+            if(maze.maze[i][j].solved)  
+            {
+                if(j % 2 == 1) os << maze.PATH << maze.SOLVED << maze.PATH;
+                else           os << maze.SOLVED;
+            }
+            else if(maze.maze[i][j].wall == true) 
             {
                 if(j % 2 == 1)  os << maze.WALL << maze.WALL << maze.WALL;
                 else            os << maze.WALL;
@@ -115,12 +121,12 @@ std::istream& operator>>(std::istream& is, Maze & maze)
         if(temp_row != "")
         {
             std::vector<Maze::node> row;
-            for(int j = 0; j < temp_row.size(); j++) //Kolumner
+            for(int j = 0, y = 0; j < temp_row.size(); j++, y++) //Kolumner, behövs två iteratorer här, en för att hålla koll i temp_row och en för den faktiska koordinaten
             {
-                if(j % 2 == 1) j+=2;    //Om det är en udda kolumn finns det tre st tecken för denna, skippa till nästa kolumn
+                if      (temp_row[j] == '*') row.push_back(Maze::node(i, y, true));
+                else if (temp_row[j] == ' ') row.push_back(Maze::node(i, y));             
 
-                if      (temp_row[j] == '*') row.push_back(Maze::node(i, j, true));
-                else if (temp_row[j] == ' ') row.push_back(Maze::node(i, j));                
+                if(j % 2 == 1) j+=2;    //Om det är en udda kolumn finns det tre st tecken för denna, skippa till nästa kolumn   
             }
             maze.maze.push_back(row);
         }
@@ -138,9 +144,44 @@ void Maze::resetVisitedNodes()
 
 void Maze::solveMaze()
 {
-    std::stack<node> nodes;
-    while(nodes.top().x != maze.size()-2)
-    {
+    srand(time(NULL));
 
+
+    std::stack<node> nodes;
+    
+    maze[1][1].visited = true;
+    maze[1][1].solved = true;
+
+    nodes.push(maze[1][1]);
+    
+    //while(nodes.top().x != maze[0].size()-2)
+    while(true)
+    {
+        std::cout << nodes.top().x << nodes.top().y << std::endl << std::endl;
+
+        std::vector<node> neighbours = getNeighbours(nodes.top());   //Hämta samtliga grannar till den översta noden
+        
+        for(int i = 0; i < neighbours.size(); i++)
+            std::cout << neighbours[i].x << neighbours[i].y << std::endl;
+        
+        //if(neighbours.empty())  nodes.pop();    //Om den inte hittar några obesökta grannar, poppa stacken och prova igen
+        //else
+        //{
+            nodes.push(neighbours[rand() % neighbours.size()]); //Lägg till en slumpad granne till stacken
+
+            std::cout << std::endl << nodes.top().x << nodes.top().y << std::endl;
+
+            node P = nodes.top(); //Spara den slumpade grannen för enkelhetens skull
+
+            //std::cout << P.x << P.y << std::endl;
+
+            maze[P.y][P.x].visited = true;   //Sätt den slumpade grannen som besökt
+            maze[P.y][P.x].solved = true;
+          
+            //system("clear");
+            std::cout << *this << std::endl;
+            std::cin.get();
+            //std::this_thread::sleep_for(std::chrono::milliseconds(50));        
+        //}
     }
 }

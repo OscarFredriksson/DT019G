@@ -18,6 +18,7 @@ class Maze
 private:
     const char PATH = ' ';
     const char WALL = '*';
+    const char SOLVED = '.';
     const char START = 'S';
     const char END = 'X';
     
@@ -29,15 +30,17 @@ private:
             y = src.y;
             wall = src.wall;
             visited = src.visited;
+            solved = src.solved;
         };
         node(int x, int y, bool wall = false)
         : x(x), y(y), wall(wall)
         {
             visited = false;
+            solved = false;
         };
 
         int x, y;
-        bool wall, visited;
+        bool wall, visited, solved;
     };
     std::vector<std::vector<node>> maze;
     

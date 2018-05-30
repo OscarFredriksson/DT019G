@@ -91,7 +91,9 @@ int main(int argc, char* argv[])
         std::ifstream input(filename.c_str());
         Maze solve;
         input >> solve;
-        
+
+        solve.solveMaze();
+
         std::cout << solve << std::endl;
     }
     else
