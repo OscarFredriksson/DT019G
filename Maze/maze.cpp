@@ -5,7 +5,7 @@
 #include <chrono>
 #include <thread>
 
-void Maze::fillMaze()
+void Maze::fill()
 {
     srand(time(NULL));
 
@@ -26,14 +26,14 @@ void Maze::fillMaze()
     }
 }
 
-void Maze::generateMaze()
+void Maze::generate()
 {
     srand(time(NULL));
     
     rows = 2*rows+1;    //Omvandla rader och kolumner till "rätt" värden
     cols = 2*cols+1;
 
-    fillMaze(); //Fyller vektorerna med väggar
+    fill(); //Fyller vektorerna med väggar
 
     std::stack<node> nodes;
 
@@ -62,9 +62,12 @@ void Maze::generateMaze()
             if(P.y == prev.y && P.x > prev.x)   maze[P.y][P.x-1].wall = false;
             if(P.y == prev.y && P.x < prev.x)   maze[P.y][P.x+1].wall = false;
             
-            /*system("clear");
-            std::cout << *this << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));*/         
+            if(showIterations)
+            {
+                std::cout << *this << std::endl;
+                std::this_thread::sleep_for(std::chrono::milliseconds(iterationSpeed));
+                system("clear");
+            }
         }
     }
 }
@@ -116,6 +119,8 @@ std::ostream& operator<<(std::ostream& os, const Maze & maze)
 
 std::istream& operator>>(std::istream& is, Maze & maze)
 {
+    while(!maze.maze.empty()) maze.maze.pop_back();   //Töm vektorn om det finns nått i den.
+
     std::string temp_row;
     for(int i = 0; std::getline(is, temp_row); i++)    //Rader
     {
@@ -143,7 +148,7 @@ void Maze::resetVisitedNodes()
                 maze[i][j].visited = false;
 }
 
-void Maze::solveMaze()
+void Maze::solve()
 {
     if(maze[1][1].visited) resetVisitedNodes(); //Kollar om noderna redan är använda, återställer dem isåfall.
 
@@ -159,6 +164,7 @@ void Maze::solveMaze()
     while(nodes.top().x != maze[0].size()-1)
     {
         node P = nodes.top();
+
         if(P.x == maze[0].size()-2 && !maze[P.y][P.x+1].wall)
         {
             maze[P.y][P.x+1].visited = true;
@@ -177,7 +183,7 @@ void Maze::solveMaze()
                 
                 nodes.pop();
                 
-                P = nodes.top();
+                node P = nodes.top();
 
                 fixWalls(P, prev, false);
             }
@@ -187,7 +193,7 @@ void Maze::solveMaze()
                 
                 nodes.push(neighbours[rand() % neighbours.size()]); //Lägg till en slumpad granne till stacken
                 
-                P = nodes.top(); //Spara den slumpade grannen för enkelhetens skull
+                node P = nodes.top(); //Spara den slumpade grannen för enkelhetens skull
 
                 maze[P.y][P.x].visited = true;   //Sätt den slumpade grannen som besökt
                 maze[P.y][P.x].solved = true;
@@ -196,6 +202,13 @@ void Maze::solveMaze()
 
             }
         }
+        if(showIterations)
+        {
+            std::cout << *this << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(iterationSpeed));
+            system("clear");
+        }
+
     }
 }
 

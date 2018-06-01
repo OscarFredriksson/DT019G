@@ -7,13 +7,15 @@ class Maze
     public:
     size_t cols = 10;
     size_t rows = 10;
-    
-    void fillMaze();
-    void generateMaze();
+
+    bool showIterations = false;
+    int iterationSpeed = 50;
+
+    void generate();
+    void solve();
+
     friend std::ostream& operator<<(std::ostream& os, const Maze & maze);
     friend std::istream& operator>>(std::istream& is, Maze & maze);
-    void solveMaze();
-    void printMaze();
     
 
 private:
@@ -45,6 +47,7 @@ private:
     };
     std::vector<std::vector<node>> maze;
     
+    void fill();
     std::vector<node> getNeighbours(node P);
     void resetVisitedNodes();
     std::vector<node> validateNeighbours(std::vector<node> nodes, node current);

@@ -17,86 +17,102 @@ int main(int argc, char* argv[])
     bool writeToFile = false;   //Om det ska skrivas till filen eller inte
     bool readFromFile = false;
     
-    const char    * short_opts = "vhs: c: r: i: o:";    //Definierar samtliga getopt flaggor
+    const char    * short_opts = "vhws: c: r: i: o: ";    //Definierar samtliga getopt flaggor
     const struct option long_opts[] =   //Definierar samtliga långa getopt flaggor
     {
         {"version", 0,  NULL, 'v'},
         {"help",    0,  NULL, 'h'},
+        {"watch",   0,  NULL, 'w'},
         {"size",    1,  NULL, 's'},
         {"columns", 1,  NULL, 'c'},
         {"rows",    1,  NULL, 'r'},
         {"input",   1,  NULL, 'i'},
-        {"output",  1,  NULL, 'o'}
+        {"output",  1,  NULL, 'o'},
+        {NULL,      1,  NULL, '?'}
     };
 
     int arg;
     while ((arg = getopt_long(argc, argv, short_opts, long_opts, nullptr)) != -1)   //Loopa igenom alla argument
     {
-        if(arg == 'v')    std::cout << "Version 1.0" << std::endl;  //Skriv ut version
-        else if(arg == 'h')
-        { 
-            printHelp();    
-            return EXIT_SUCCESS;   
-        }
-        else if(arg == 's')
+        switch(arg)
         {
-            if(validateArg(optarg))
-            {
-                size_t size = atoi(optarg);
-
-                maze.cols = size;
-                maze.rows = size;
-            } 
-            else 
-            {
-                std::cerr << "Felaktigt argument: --size måste vara en integer." << std::endl;
-                return EXIT_FAILURE;  
+            case 'v':
+                std::cout << "Version 1.0" << std::endl;  //Skriv ut version
+                break;
+            case 'h':
+            { 
+                printHelp();    
+                return EXIT_SUCCESS;   
             }
-        }
-        else if(arg == 'c')  
-        {
-            if(validateArg(optarg))
+            case 'w':
             {
-                size_t size = atoi(optarg);
-                if(size % 2 != 1)   size++;
+                maze.showIterations = true;
+                break;
+            }
+            case 's':
+            {
+                if(validateArg(optarg))
+                {
+                    size_t size = atoi(optarg);
 
-                maze.cols = size;
-            } 
-            else 
+                    maze.cols = size;
+                    maze.rows = size;
+                } 
+                else 
+                {
+                    std::cerr << "Felaktigt argument: --size måste vara en integer." << std::endl;
+                    return EXIT_FAILURE;  
+                }
+                break;
+            }
+            case 'c':  
             {
-                std::cerr << "Felaktigt argument: --columns måste vara en integer." << std::endl;
-                return EXIT_FAILURE; 
-            } 
-        }
-        else if(arg == 'r')  
-        {
-            if(validateArg(optarg))
-            {
-                size_t size = atoi(optarg);
-                if(size % 2 != 1)   size++;
+                if(validateArg(optarg))
+                {
+                    size_t size = atoi(optarg);
+                    if(size % 2 != 1)   size++;
 
-                maze.rows = size;
-            }   
-            else    
+                    maze.cols = size;
+                } 
+                else 
+                {
+                    std::cerr << "Felaktigt argument: --columns måste vara en integer." << std::endl;
+                    return EXIT_FAILURE; 
+                } 
+                break;
+            }
+            case 'r':  
             {
-                std::cerr << "Felaktigt argument: --rows måste vara en integer." << std::endl;
+                if(validateArg(optarg))
+                {
+                    size_t size = atoi(optarg);
+                    if(size % 2 != 1)   size++;
+
+                    maze.rows = size;
+                }   
+                else    
+                {
+                    std::cerr << "Felaktigt argument: --rows måste vara en integer." << std::endl;
+                    return EXIT_FAILURE;
+                }
+                break;
+            }
+            case 'i':  //Om flaggan för utdata till en fil istället för cout
+            {
+                readFromFile = true;
+                filename = std::string(optarg); //Spara filnamnet
+                break;
+            }
+            case 'o':  //Om flaggan för utdata till en fil istället för cout
+            {
+                writeToFile = true;
+                filename = std::string(optarg); //Spara filnamnet
+                break;
+            }
+            case '?':  return EXIT_FAILURE;
+            default:
+                std::cerr << "Nått gick fel, programmet bör ej komma hit." << std::endl;
                 return EXIT_FAILURE;
-            }
-        }
-        else if(arg == 'i')  //Om flaggan för utdata till en fil istället för cout
-        {
-            readFromFile = true;
-            filename = std::string(optarg); //Spara filnamnet
-        }
-        else if(arg == 'o')  //Om flaggan för utdata till en fil istället för cout
-        {
-            writeToFile = true;
-            filename = std::string(optarg); //Spara filnamnet
-        }
-        else if(arg == '?')  
-        {
-            std::cerr << "Felaktigt argument" << std::endl;
-            return EXIT_FAILURE;
         }
     }
     if(readFromFile)
@@ -107,16 +123,15 @@ int main(int argc, char* argv[])
             std::cerr << "Kunde inte öppna filen." << std::endl;
             return EXIT_FAILURE;
         }
-        Maze solve;
-        input >> solve;
+        input >> maze;
 
-        solve.solveMaze();
+        maze.solve();
 
-        std::cout << solve << std::endl;
+        std::cout << maze << std::endl;
     }
     else
     {
-        maze.generateMaze();
+        maze.generate();
 
         if(writeToFile) //Om det ska skrivas till filen
         {
@@ -131,7 +146,7 @@ int main(int argc, char* argv[])
         //else    
         //std::cout << maze << std::endl;
         //std::cout << "Lösning: " << std::endl;
-        maze.solveMaze();
+        maze.solve();
         std::cout << maze << std::endl;
     }
     
@@ -143,6 +158,7 @@ void printHelp()    //Skriver ut hjälptext
     std::cout << std::endl;
     std::cout << "\t--version  | -v.      Skriver ut versionsnummer." << std::endl;
     std::cout << "\t--help     | -h.      Skriver ut detta." << std::endl;
+    std::cout << "\t--watch    | -w.      Visar varje iteration medan labyrinten skapas/löses." << std::endl;
     std::cout << "\t(--size    | -s)N.    Skapa en labyrint med storleken N. Defaultvärde: 10." << std::endl;
     std::cout << "\t(--columns | -c)W.    Skapa en labyrint med bredden W.   Defaultvärde: 10." << std::endl;
     std::cout << "\t(--rows    | -r)H.    Skapa en labyrint med höjden N.    Defaultvärde: 10." << std::endl;
