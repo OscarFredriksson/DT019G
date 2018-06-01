@@ -1,5 +1,6 @@
 #include "maze.h"
 #include <unistd.h> //getopt
+#include <getopt.h>
 #include <cstdlib> //atoi
 #include <fstream>
 #include <string>
@@ -16,8 +17,20 @@ int main(int argc, char* argv[])
     bool writeToFile = false;   //Om det ska skrivas till filen eller inte
     bool readFromFile = false;
     
+    const char    * short_opts = "vhs: c: r: i: o:";    //Definierar samtliga getopt flaggor
+    const struct option long_opts[] =   //Definierar samtliga långa getopt flaggor
+    {
+        {"version", 0,  NULL, 'v'},
+        {"help",    0,  NULL, 'h'},
+        {"size",    1,  NULL, 's'},
+        {"columns", 1,  NULL, 'c'},
+        {"rows",    1,  NULL, 'r'},
+        {"input",   1,  NULL, 'i'},
+        {"output",  1,  NULL, 'o'}
+    };
+
     int arg;
-    while ((arg = getopt(argc, argv, "hvs: c: r: o: i:")) != -1)   //Loopa igenom alla argument
+    while ((arg = getopt_long(argc, argv, short_opts, long_opts, nullptr)) != -1)   //Loopa igenom alla argument
     {
         if(arg == 'v')    std::cout << "Version 1.0" << std::endl;  //Skriv ut version
         else if(arg == 'h')
@@ -36,7 +49,7 @@ int main(int argc, char* argv[])
             } 
             else 
             {
-                std::cout << "Felaktigt argument: --size måste vara en integer." << std::endl;
+                std::cerr << "Felaktigt argument: --size måste vara en integer." << std::endl;
                 return EXIT_FAILURE;  
             }
         }
@@ -51,7 +64,7 @@ int main(int argc, char* argv[])
             } 
             else 
             {
-                std::cout << "Felaktigt argument: --columns måste vara en integer." << std::endl;
+                std::cerr << "Felaktigt argument: --columns måste vara en integer." << std::endl;
                 return EXIT_FAILURE; 
             } 
         }
@@ -66,7 +79,7 @@ int main(int argc, char* argv[])
             }   
             else    
             {
-                std::cout << "Felaktigt argument: --rows måste vara en integer." << std::endl;
+                std::cerr << "Felaktigt argument: --rows måste vara en integer." << std::endl;
                 return EXIT_FAILURE;
             }
         }
@@ -82,13 +95,18 @@ int main(int argc, char* argv[])
         }
         else if(arg == '?')  
         {
-            std::cout << "Felaktigt argument" << std::endl;
+            std::cerr << "Felaktigt argument" << std::endl;
             return EXIT_FAILURE;
         }
     }
     if(readFromFile)
     {
         std::ifstream input(filename.c_str());
+        if(!input.is_open())
+        {
+            std::cerr << "Kunde inte öppna filen." << std::endl;
+            return EXIT_FAILURE;
+        }
         Maze solve;
         input >> solve;
 
@@ -103,9 +121,17 @@ int main(int argc, char* argv[])
         if(writeToFile) //Om det ska skrivas till filen
         {
             std::ofstream output(filename.c_str()); //Öppna filen med filnamnet
+            if(!output.is_open())
+            {
+                std::cerr << "Kunde inte öppna eller skapa filen." << std::endl;
+                return EXIT_FAILURE;
+            }
             output << maze << std::endl;    //Skriv labyrinten till den
         }
         //else    
+        //std::cout << maze << std::endl;
+        //std::cout << "Lösning: " << std::endl;
+        maze.solveMaze();
         std::cout << maze << std::endl;
     }
     

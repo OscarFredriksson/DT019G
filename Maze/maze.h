@@ -13,7 +13,8 @@ class Maze
     friend std::ostream& operator<<(std::ostream& os, const Maze & maze);
     friend std::istream& operator>>(std::istream& is, Maze & maze);
     void solveMaze();
-    void resetVisitedNodes();
+    void printMaze();
+    
 
 private:
     const char PATH = ' ';
@@ -45,5 +46,9 @@ private:
     std::vector<std::vector<node>> maze;
     
     std::vector<node> getNeighbours(node P);
+    void resetVisitedNodes();
+    std::vector<node> validateNeighbours(std::vector<node> nodes, node current);
+    void fixWalls(node P, node prev, bool state);
+
 
 };
