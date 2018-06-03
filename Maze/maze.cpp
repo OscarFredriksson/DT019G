@@ -11,16 +11,18 @@ void Maze::fill()
 
     //int rndm = 2 * (rand() % rows/2) + 1;   //Slumpa ett udda tal för slutpunkten
 
+    int rndm = rows-2;
+
     for(int i = 0; i < rows; i++)  //Loopar rader
     {
         std::vector<node> temp; //Temporär vektor att spara varje rad i 
                         
         for(int j = 0; j < cols; j++) //Loopar kolumner
         {            
-            if(j == 0 && i == 1)                    temp.push_back(node(j, i));         //Om startpunkten är nådd skriv denna
-            else if(j == cols-1 && i == rows-2)     temp.push_back(node(j, i));         //Om slutpunkten är nådd skriv denna
-            else if(j % 2 == 0 || i % 2 == 0)       temp.push_back(node(j, i, true));   //Om antalet rader eller kolumner är jämnt, skriv vägg
-            else                                    temp.push_back(node(j, i));         //Annars skriv gång
+            if(j == 0 && i == 1)                temp.push_back(node(j, i));         //Om startpunkten är nådd skriv denna
+            else if(j == cols-1 && i == rndm)   temp.push_back(node(j, i));         //Om slutpunkten är nådd skriv denna
+            else if(j % 2 == 0 || i % 2 == 0)   temp.push_back(node(j, i, true));   //Om antalet rader eller kolumner är jämnt, skriv vägg
+            else                                temp.push_back(node(j, i));         //Annars skriv gång
         }
         maze.push_back(temp);  //Lägg till raden
     }
@@ -91,8 +93,6 @@ std::ostream& operator<<(std::ostream& os, const Maze & maze)
     {
         for(int j = 0; j < maze.maze[0].size(); j++)    //Loopar igenom alla kolumner
         {
-            //if(j == 0 && !maze.maze[j][i].wall)                         std::cout << maze.START;
-            //else if(j == maze.maze.size()-1 && !maze.maze[j][i].wall)   std::cout << maze.END;
             if(maze.maze[i][j].solved)  
             {
                 if(j % 2 == 1)
@@ -122,33 +122,43 @@ std::istream& operator>>(std::istream& is, Maze & maze)
     while(!maze.maze.empty()) maze.maze.pop_back();   //Töm vektorn om det finns nått i den.
 
     std::string temp_row;
+    std::string prev_row;
+    
     for(int i = 0; std::getline(is, temp_row); i++)    //Rader
-    {
+    {        
         if(temp_row != "")
         {
+            if(i && temp_row.size() != prev_row.size()) //Kollar varje varv så att den tidigare raden är lika stor som den föregående, samtliga rader måste vara lika stora
+                throw "En eller flera rader i filen är i felaktigt format.";
+ 
             std::vector<Maze::node> row;
             for(int j = 0, x = 0; j < temp_row.size(); j++, x++) //Kolumner, behövs två iteratorer här, en för att hålla koll i temp_row och en för den faktiska koordinaten
             {
                 if      (temp_row[j] == '*') row.push_back(Maze::node(x, i, true));
-                else if (temp_row[j] == ' ') row.push_back(Maze::node(x, i));             
+                else if (temp_row[j] == ' ' ||
+                         temp_row[j] == '.') row.push_back(Maze::node(x, i));
+                else throw "Hittade ett okänt tecken i filen."; 
 
                 if(j % 2 == 1) j+=2;    //Om det är en udda kolumn finns det tre st tecken för denna, skippa till nästa kolumn   
             }
             maze.maze.push_back(row);
         }
+        prev_row = temp_row;
     }
     return is;
 }
 
 void Maze::resetVisitedNodes()
 {
-    for(int i = 0; i < rows; i++)
-        for(int j = 0; j < cols; j++)
-            if(maze[i][j].visited == true)
-                maze[i][j].visited = false;
+    for(int i = 0; i < maze[0].size(); i++)
+        for(int j = 0; j < maze.size(); j++)
+        {
+            if(maze[i][j].visited)  maze[i][j].visited = false;
+            if(maze[i][j].solved)    maze[i][j].solved = false;
+        }
 }
 
-void Maze::solve()
+bool Maze::solve()
 {
     if(maze[1][1].visited) resetVisitedNodes(); //Kollar om noderna redan är använda, återställer dem isåfall.
 
@@ -182,6 +192,8 @@ void Maze::solve()
                 maze[prev.y][prev.x].solved = false;
                 
                 nodes.pop();
+
+                if(nodes.empty())   return false;   //Om den har tömt hela stacken har den inte hittat någon lösning, returnera false
                 
                 node P = nodes.top();
 
@@ -210,9 +222,10 @@ void Maze::solve()
         }
 
     }
+    return true;
 }
 
-std::vector<Maze::node> Maze::validateNeighbours(std::vector<node> nodes, node current)
+std::vector<Maze::node> Maze::validateNeighbours(std::vector<node> nodes, node current) //Kollar vilka grannar som inte är bakom en vägg
 {
     std::vector<node> temp;
     for(int i = 0; i < nodes.size(); i++)
@@ -227,7 +240,6 @@ std::vector<Maze::node> Maze::validateNeighbours(std::vector<node> nodes, node c
 
 void Maze::fixWalls(node P, node prev, bool state)
 {
-    //Testar samtliga kombinationer av väggar som ska tas bort
     if(P.x == prev.x && P.y > prev.y)   maze[P.y-1][P.x].solved = state;
     if(P.x == prev.x && P.y < prev.y)   maze[P.y+1][P.x].solved = state;
     if(P.y == prev.y && P.x > prev.x)   maze[P.y][P.x-1].solved = state;

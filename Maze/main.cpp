@@ -1,5 +1,4 @@
 #include "maze.h"
-#include <unistd.h> //getopt
 #include <getopt.h>
 #include <cstdlib> //atoi
 #include <fstream>
@@ -15,14 +14,17 @@ int main(int argc, char* argv[])
     
     std::string filename;
     bool writeToFile = false;   //Om det ska skrivas till filen eller inte
-    bool readFromFile = false;
+    bool readFromFile = false;  //Om det ska läsas från filen eller inte
+
+    bool check = false;
     
-    const char    * short_opts = "vhws: c: r: i: o: ";    //Definierar samtliga getopt flaggor
+    const char    * short_opts = "vhbws: c: r: i: o: ";    //Definierar samtliga getopt flaggor
     const struct option long_opts[] =   //Definierar samtliga långa getopt flaggor
     {
         {"version", 0,  NULL, 'v'},
         {"help",    0,  NULL, 'h'},
         {"watch",   0,  NULL, 'w'},
+        {"check",   0,  NULL, 'b'},
         {"size",    1,  NULL, 's'},
         {"columns", 1,  NULL, 'c'},
         {"rows",    1,  NULL, 'r'},
@@ -46,10 +48,25 @@ int main(int argc, char* argv[])
             }
             case 'w':
             {
-                maze.showIterations = true;
+                if(check)
+                {
+                    std::cerr << "--watch och --check kan inte anges samtidigt." << std::endl;
+                    return EXIT_FAILURE;
+                }
+                else    maze.showIterations = true;
                 break;
             }
-            case 's':
+            case 'b':
+            {
+                if(maze.showIterations)
+                {
+                    std::cerr << "--watch och --check kan inte anges samtidigt." << std::endl;
+                    return EXIT_FAILURE;
+                }
+                else    check = true;
+                break;
+            }
+            case 's':   //Storlek
             {
                 if(validateArg(optarg))
                 {
@@ -65,7 +82,7 @@ int main(int argc, char* argv[])
                 }
                 break;
             }
-            case 'c':  
+            case 'c':  //Kolumner
             {
                 if(validateArg(optarg))
                 {
@@ -81,7 +98,7 @@ int main(int argc, char* argv[])
                 } 
                 break;
             }
-            case 'r':  
+            case 'r':   //Rader
             {
                 if(validateArg(optarg))
                 {
@@ -109,7 +126,7 @@ int main(int argc, char* argv[])
                 filename = std::string(optarg); //Spara filnamnet
                 break;
             }
-            case '?':  return EXIT_FAILURE;
+            case '?':  return EXIT_FAILURE; //Om ett felaktigt argument ges
             default:
                 std::cerr << "Nått gick fel, programmet bör ej komma hit." << std::endl;
                 return EXIT_FAILURE;
@@ -120,19 +137,36 @@ int main(int argc, char* argv[])
         std::ifstream input(filename.c_str());
         if(!input.is_open())
         {
-            std::cerr << "Kunde inte öppna filen." << std::endl;
+            std::cerr << "Kunde inte öppna filen \"" << filename << "\"." << std::endl;
             return EXIT_FAILURE;
         }
-        input >> maze;
+        try 
+        {
+            input >> maze;
+        }
+        catch(char const* c)
+        {
+            std::cerr << "Error: " << c << std::endl;
+            return EXIT_FAILURE;
+        }
 
-        maze.solve();
+        if(check)
+        {
+            if(maze.solve())    std::cout << "Löste labyrinten!" << std::endl;
+            else                std::cout << "Lyckades inte lösa labyrinten." << std::endl;
+        } 
+        else if(maze.solve())   std::cout << maze << std::endl;
+        else std::cout << "Lyckades inte lösa labyrinten." << std::endl;
+    
 
-        std::cout << maze << std::endl;
+       
+        return EXIT_SUCCESS;
     }
-    else
-    {
-        maze.generate();
 
+    maze.generate();
+    
+    if(maze.solve())
+    {
         if(writeToFile) //Om det ska skrivas till filen
         {
             std::ofstream output(filename.c_str()); //Öppna filen med filnamnet
@@ -143,13 +177,12 @@ int main(int argc, char* argv[])
             }
             output << maze << std::endl;    //Skriv labyrinten till den
         }
-        //else    
-        //std::cout << maze << std::endl;
-        //std::cout << "Lösning: " << std::endl;
-        maze.solve();
-        std::cout << maze << std::endl;
+        else    
+        {
+            system("clear");
+            std::cout << maze << std::endl;
+        }
     }
-    
     return EXIT_SUCCESS;    //Om den tar sig igenom hela koden utan problem, returnera att körningen gick bra
 }
 
@@ -159,12 +192,12 @@ void printHelp()    //Skriver ut hjälptext
     std::cout << "\t--version  | -v.      Skriver ut versionsnummer." << std::endl;
     std::cout << "\t--help     | -h.      Skriver ut detta." << std::endl;
     std::cout << "\t--watch    | -w.      Visar varje iteration medan labyrinten skapas/löses." << std::endl;
+    std::cout << "\t--check    | -b.      Skriver ut endast \"Löste labyrinten!\" om en lösning finnes, annars \"Lyckades inte lösa labyrinten.\"." << std::endl;
     std::cout << "\t(--size    | -s)N.    Skapa en labyrint med storleken N. Defaultvärde: 10." << std::endl;
     std::cout << "\t(--columns | -c)W.    Skapa en labyrint med bredden W.   Defaultvärde: 10." << std::endl;
     std::cout << "\t(--rows    | -r)H.    Skapa en labyrint med höjden N.    Defaultvärde: 10." << std::endl;
-    std::cout << "\t(--input   | -i)file. Använd filen file som indata." << std::endl;
+    std::cout << "\t(--input   | -i)file. Använd filen file som indata istället för att generera en labyrint." << std::endl;
     std::cout << "\t(--output  | -o)file. Använd filen file för utdata. Annars cout." << std::endl;
-    std::cout << "\t--check    | -b.      Skriver ut endast \"Solution found\" om en lösning finnes, annars \"Solution not found\"." << std::endl;
     std::cout << std::endl;
 }
 
