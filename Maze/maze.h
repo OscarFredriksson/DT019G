@@ -4,7 +4,7 @@
 
 class Maze
 {
-    public:
+public:
     size_t cols = 10;
     size_t rows = 10;
 
@@ -36,6 +36,7 @@ private:
             visited = src.visited;
             solved = src.solved;
         };
+        
         node(int x, int y, bool wall = false)
         : x(x), y(y), wall(wall)
         {
@@ -46,6 +47,7 @@ private:
         int x, y;
         bool wall, visited, solved;
     };
+    
     std::vector<std::vector<node>> maze;
     
     void fill();

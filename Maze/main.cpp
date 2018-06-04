@@ -10,13 +10,15 @@ bool validateArg(char* optarg);
 
 int main(int argc, char* argv[])
 {    
+    srand(time(NULL));
+
     Maze maze;
     
     std::string inputFile;  //Filnamnet för den fil som ska läsas från
     std::string outputFile; //Filnamnet för den fil som ska skrivas till (behövs två utifall det ska skrivas och läsas från olika filer)
 
     bool readFromFile = false;  //Om det ska läsas från filen eller inte
-        bool writeToFile = false;   //Om det ska skrivas till filen eller inte
+    bool writeToFile = false;   //Om det ska skrivas till filen eller inte
 
     bool check = false;
     

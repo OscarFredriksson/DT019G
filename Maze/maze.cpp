@@ -7,8 +7,6 @@
 
 void Maze::fill()   //Fyller labyrinten med väggar och gångar i ett rutmönster
 {
-    srand(time(NULL));
-
     int rndm = 2 * (rand() % rows/2) + 1;   //Slumpa ett udda tal för slutpunkten
 
     //int rndm = rows-2;
@@ -29,9 +27,7 @@ void Maze::fill()   //Fyller labyrinten med väggar och gångar i ett rutmönste
 }
 
 void Maze::generate()
-{
-    srand(time(NULL));
-    
+{    
     rows = 2*rows+1;    //Omvandla rader och kolumner till "rätt" värden
     cols = 2*cols+1;
 
@@ -183,8 +179,6 @@ void Maze::resetNodes()  //Återställer alla besökta och lösta noder
 bool Maze::solve()
 {
     if(maze[1][1].visited) resetNodes(); //Kollar om noderna redan är använda, återställer dem isåfall.
-
-    srand(time(NULL));
 
     std::stack<node> nodes; //Stack med den lösta gången, kommer när körningen är klar motsvara vägen igenom labyrinten
     
