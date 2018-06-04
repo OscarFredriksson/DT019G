@@ -7,7 +7,7 @@
 
 void printHelp();   //Skriver ut hjälptext
 
-bool validateArg(char* optarg);
+bool isInt(char* optarg);
 
 int main(int argc, char* argv[])
 {   
@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
     bool readFromFile = false;  //Om det ska läsas från filen eller inte
     bool writeToFile = false;   //Om det ska skrivas till filen eller inte
 
-    bool check = false;
+    bool check = false; //Om programmet ska skriva ut labyrinten eller bara kolla om den kunde lösas eller inte
     
     const char    * short_opts = "vhbws: c: r: i: o: ";    //Definierar samtliga getopt flaggor
     const struct option long_opts[] =   //Definierar samtliga långa getopt flaggor
@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
             }
             case 's':   //Storleksflagga
             {
-                if(validateArg(optarg)) //Kollar om argumentet endast innehåller integers
+                if(isInt(optarg)) //Kollar om argumentet endast innehåller integers
                 {
                     size_t size = atoi(optarg); //Gör om strängen till en int
 
@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
             }
             case 'c':  //Kolumnsflagga
             {
-                if(validateArg(optarg)) //Kollar om argumentet endast innehåller integers
+                if(isInt(optarg)) //Kollar om argumentet endast innehåller integers
                 {
                     size_t size = atoi(optarg); //Gör om strängen till en int
 
@@ -104,7 +104,7 @@ int main(int argc, char* argv[])
             }
             case 'r':   //Radflagga
             {
-                if(validateArg(optarg)) //Kollar om argumentet endast innehåller integers
+                if(isInt(optarg)) //Kollar om argumentet endast innehåller integers
                 {
                     size_t size = atoi(optarg); //Gör om strängen till en int
 
@@ -150,9 +150,9 @@ int main(int argc, char* argv[])
         {
             input >> maze;
         }
-        catch(char const* c)    //Om nånting gick fel vid inläsning från filen, skriv felmeddelande
+        catch(char const* caught)    //Om nånting gick fel vid inläsning från filen, skriv felmeddelande
         {
-            std::cerr << "Error: " << c << std::endl;
+            std::cerr << "Error: " << caught << std::endl;
             return EXIT_FAILURE;
         }
     }
@@ -198,7 +198,7 @@ void printHelp()    //Skriver ut hjälptext
     std::cout << std::endl;
 }
 
-bool validateArg(char* optarg)  //Kollar om ett argument innehåller endast integers
+bool isInt(char* optarg)  //Kollar om ett argument innehåller endast integers
 {
     std::string temp(optarg);   //Gör om char* till string
     

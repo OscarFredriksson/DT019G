@@ -5,14 +5,9 @@
 #include <chrono>
 #include <thread>
 
-int myrandom(int i)
-{
-    return std::rand() % i;
-}
-
 void Maze::fill()   //Fyller labyrinten med väggar och gångar i ett rutmönster
 {
-    int rndm = (rand() % (rows - 1)) | 0x1;   //Slumpa ett udda tal för slutpunkten
+    int rndm = (rand() % (rows - 1)) | 0x1;   //Slumpa ett udda tal för slutpunkten, får ett udda tal genom att ta bitvis or med talet 00000001
 
     for(int i = 0; i < rows; i++)  //Loopar rader
     {
@@ -147,8 +142,10 @@ std::istream& operator>>(std::istream& is, Maze & maze) //Läser in en labyrint
             {
                 if(temp_row[j] == maze.WALL)  //Om tecknet är vägg
                     row.push_back(Maze::node(x, i, true));  //Lägg till en vägg i raden
+                
                 else if(temp_row[j] == maze.PATH || temp_row[j] == maze.SOLVED) //Om tecknet är gång eller löst gång
                     row.push_back(Maze::node(x, i));    //Lägg till en gång i raden
+                
                 else    
                     throw "Hittade ett okänt tecken i filen."; //Om den hittar något annat tecken, kasta ett undantag
 
@@ -198,7 +195,6 @@ bool Maze::solve()
         if(P.x == cols-2 && !maze[P.y][P.x+1].wall) //Om den är på den sista kolumnen, kolla om den kan hitta utgången
         {
             //Gå isåfall ut ur labyrinten
-            //maze[P.y][P.x+1].visited = true;
             maze[P.y][P.x+1].solved = true;
             nodes.push(maze[P.y][P.x+1]);
         }
