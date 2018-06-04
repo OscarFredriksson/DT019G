@@ -5,11 +5,14 @@
 #include <chrono>
 #include <thread>
 
+int myrandom(int i)
+{
+    return std::rand() % i;
+}
+
 void Maze::fill()   //Fyller labyrinten med väggar och gångar i ett rutmönster
 {
-    int rndm = 2 * (rand() % rows/2) + 1;   //Slumpa ett udda tal för slutpunkten
-
-    //int rndm = rows-2;
+    int rndm = (rand() % (rows - 1)) | 0x1;   //Slumpa ett udda tal för slutpunkten
 
     for(int i = 0; i < rows; i++)  //Loopar rader
     {

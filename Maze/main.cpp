@@ -3,14 +3,15 @@
 #include <cstdlib> //atoi
 #include <fstream>
 #include <string>
+#include <random>
 
 void printHelp();   //Skriver ut hjälptext
 
 bool validateArg(char* optarg);
 
 int main(int argc, char* argv[])
-{    
-    srand(time(NULL));
+{   
+    srand(std::random_device()());
 
     Maze maze;
     
@@ -42,76 +43,76 @@ int main(int argc, char* argv[])
     {
         switch(arg)
         {
-            case 'v':
+            case 'v':   //Versionsflagga
                 std::cout << "Version 1.0" << std::endl;  //Skriv ut version
                 return EXIT_SUCCESS;
-            case 'h':
+            case 'h':   //Hjälpflagga
             { 
-                printHelp();    
+                printHelp();    //Skriv ut hjälp
                 return EXIT_SUCCESS;   
             }
-            case 'w':
+            case 'w':   //Watchflagga
             {
-                if(check)
+                if(check)   //Kolla om checkflaggan är satt, skriv isåfall felmeddelande
                 {
-                    std::cerr << "--watch och --check kan inte anges samtidigt." << std::endl;
+                    std::cerr << "Error: --watch och --check kan inte anges samtidigt." << std::endl;
                     return EXIT_FAILURE;
                 }
-                else    maze.showIterations = true;
+                else    maze.showIterations = true; 
                 break;
             }
-            case 'b':
+            case 'b':   //Checkflagga
             {
-                if(maze.showIterations)
+                if(maze.showIterations) //Kolla om watchflaggan är satt, skriv isåfall felmeddelande
                 {
-                    std::cerr << "--watch och --check kan inte anges samtidigt." << std::endl;
+                    std::cerr << "Error: --watch och --check kan inte anges samtidigt." << std::endl;
                     return EXIT_FAILURE;
                 }
                 else    check = true;
                 break;
             }
-            case 's':   //Storlek
+            case 's':   //Storleksflagga
             {
-                if(validateArg(optarg))
+                if(validateArg(optarg)) //Kollar om argumentet endast innehåller integers
                 {
-                    size_t size = atoi(optarg);
+                    size_t size = atoi(optarg); //Gör om strängen till en int
 
-                    maze.cols = size;
+                    maze.cols = size;   //Skriv till både kolumn och rad variablerna
                     maze.rows = size;
                 } 
-                else 
+                else    //Om argumentet innehåller nått annat än integers, skriv felmeddelande
                 {
-                    std::cerr << "Felaktigt argument: --size måste vara en integer." << std::endl;
+                    std::cerr << "Error: Felaktigt argument: --size måste vara en integer." << std::endl;
                     return EXIT_FAILURE;  
                 }
                 break;
             }
-            case 'c':  //Kolumner
+            case 'c':  //Kolumnsflagga
             {
-                if(validateArg(optarg))
+                if(validateArg(optarg)) //Kollar om argumentet endast innehåller integers
                 {
-                    size_t size = atoi(optarg);
+                    size_t size = atoi(optarg); //Gör om strängen till en int
 
-                    maze.cols = size;
+                    maze.cols = size;   //Skriv till labyrintens variabel
                 } 
-                else 
+                else    //Om argumentet innehåller nått annat än integers, skriv felmeddelande
                 {
-                    std::cerr << "Felaktigt argument: --columns måste vara en integer." << std::endl;
+                    std::cerr << "Error: Felaktigt argument: --columns måste vara en integer." << std::endl;
                     return EXIT_FAILURE; 
                 } 
                 break;
             }
-            case 'r':   //Rader
+            case 'r':   //Radflagga
             {
-                if(validateArg(optarg))
+                if(validateArg(optarg)) //Kollar om argumentet endast innehåller integers
                 {
-                    size_t size = atoi(optarg);
+                    size_t size = atoi(optarg); //Gör om strängen till en int
 
-                    maze.rows = size;
+                    maze.rows = size;   //Skriv till labyrintens variabel
                 }   
-                else    
+                else   //Om argumentet innehåller nått annat än integers, skriv felmeddelande   
                 {
-                    std::cerr << "Felaktigt argument: --rows måste vara en integer." << std::endl;
+                    std::cerr << "Error: Felaktigt argument: --rows måste vara en integer." << std::endl;
                     return EXIT_FAILURE;
                 }
                 break;
@@ -129,27 +130,27 @@ int main(int argc, char* argv[])
                 break;
             }
             case '?':  return EXIT_FAILURE; //Om ett felaktigt argument ges
-            default:
+            default:    //case '?' borde fånga alla okända flaggor, alltså bör programmet aldrig nå hit.
             {
-                std::cerr << "Nått gick fel, programmet bör ej komma hit." << std::endl;
+                std::cerr << "Error: Nått gick fel, programmet bör ej komma hit." << std::endl;
                 return EXIT_FAILURE;
             }
         }
     }
 
-    if(readFromFile)
+    if(readFromFile)    //Om det ska läsas från en fil istället för att generera en labyrint
     {
-        std::ifstream input(inputFile.c_str());
-        if(!input.is_open())
+        std::ifstream input(inputFile.c_str()); //Öppnar filen med det givna filnamnet
+        if(!input.is_open())    //Om programmet inte lyckades öppna filen, skriv felmeddelande
         {
-            std::cerr << "Kunde inte öppna filen \"" << inputFile << "\"." << std::endl;
+            std::cerr << "Error: Kunde inte öppna filen \"" << inputFile << "\", den kanske inte finns." << std::endl;
             return EXIT_FAILURE;
         }
         try //Testar läsa in från filen
         {
             input >> maze;
         }
-        catch(char const* c)
+        catch(char const* c)    //Om nånting gick fel vid inläsning från filen, skriv felmeddelande
         {
             std::cerr << "Error: " << c << std::endl;
             return EXIT_FAILURE;
@@ -157,24 +158,25 @@ int main(int argc, char* argv[])
     }
     else    maze.generate();
     
-    if(check)
+    if(check)   //Om check flaggan är satt
     {
+        //Meddela endast om labyrinten lyckades lösas eller inte
         if(maze.solve())    std::cout << "Löste labyrinten!" << std::endl;
         else                std::cout << "Lyckades inte lösa labyrinten." << std::endl;
     } 
-    else if(maze.solve())
+    else if(maze.solve())   //Om den lyckas lösa labyrinten
     { 
         if(writeToFile) //Om det ska skrivas till filen
         {
-            std::ofstream output(outputFile.c_str()); //Öppna filen med filnamnet
-            if(!output.is_open())
+            std::ofstream output(outputFile.c_str()); //Öppnar filen med det givna filnamnet, om den inte finns skapas den
+            if(!output.is_open())   //Om programmet inte lyckades öppna eller skapa filen, skriv felmeddelande
             {
-                std::cerr << "Kunde inte öppna eller skapa filen \"" << outputFile << "\"." << std::endl;
+                std::cerr << "Error: Kunde inte öppna eller skapa filen \"" << outputFile << "\"." << std::endl;
                 return EXIT_FAILURE;
             }
-            output << maze << std::endl;    //Skriv labyrinten till den
+            output << maze << std::endl;    //Skriv labyrinten till filen
         }
-        else    std::cout << maze << std::endl;
+        else    std::cout << maze << std::endl; //Om det inte ska skrivas till en fil, skriv till cout
     }
     else std::cout << "Lyckades inte lösa labyrinten." << std::endl;
 
