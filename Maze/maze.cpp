@@ -1,28 +1,8 @@
 #include "maze.h"
 #include <stack>
-#include <cstdlib> //srand
-#include <ctime>    //time
+#include <cstdlib> //srand, atoi
 #include <chrono>
 #include <thread>
-
-void Maze::fill()   //Fyller labyrinten med väggar och gångar i ett rutmönster
-{
-    int rndm = (rand() % (rows - 1)) | 0x1;   //Slumpa ett udda tal för slutpunkten, får ett udda tal genom att ta bitvis or med talet 00000001
-
-    for(int i = 0; i < rows; i++)  //Loopar rader
-    {
-        std::vector<node> temp; //Temporär vektor att spara varje rad i 
-                        
-        for(int j = 0; j < cols; j++) //Loopar kolumner
-        {            
-            if(j == 0 && i == 1)                temp.push_back(node(j, i));         //Om startpunkten är nådd skriv denna
-            else if(j == cols-1 && i == rndm)   temp.push_back(node(j, i));         //Om slutpunkten är nådd skriv denna
-            else if(j % 2 == 0 || i % 2 == 0)   temp.push_back(node(j, i, true));   //Om antalet rader eller kolumner är jämnt, skriv vägg
-            else                                temp.push_back(node(j, i));         //Annars skriv gång
-        }
-        maze.push_back(temp);  //Lägg till raden
-    }
-}
 
 void Maze::generate()
 {    
@@ -31,24 +11,24 @@ void Maze::generate()
 
     fill(); //Fyller vektorerna med väggar
 
-    std::stack<node> nodes;
+    std::stack<node> path;
 
     //Gå till första positionen i labyrinten
     maze[1][1].visited = true;      
-    nodes.push(maze[1][1]);
+    path.push(maze[1][1]);
 
-    while(!nodes.empty())
+    while(!path.empty())
     {
-        std::vector<node> neighbours = getNeighbours(nodes.top());   //Hämta samtliga grannar till den översta noden
+        std::vector<node> neighbours = getNeighbours(path.top());   //Hämta samtliga grannar till den översta noden
         
-        if(neighbours.empty())  nodes.pop();    //Om den inte hittar några obesökta grannar, poppa stacken och prova igen
+        if(neighbours.empty())  path.pop();    //Om den inte hittar några obesökta grannar, poppa stacken och prova igen
         else
         {
-            node prev = nodes.top();  //Spara föregående nod
+            node prev = path.top();  //Spara föregående nod
 
-            nodes.push(neighbours[rand() % neighbours.size()]); //Lägg till en slumpad granne till stacken
+            path.push(neighbours[rand() % neighbours.size()]); //Lägg till en slumpad granne till stacken
 
-            node P = nodes.top(); //Spara den slumpade grannen för enkelhetens skull
+            node P = path.top(); //Spara den slumpade grannen för enkelhetens skull
 
             maze[P.y][P.x].visited = true;   //Sätt den slumpade grannen som besökt
 
@@ -65,6 +45,25 @@ void Maze::generate()
                 system("clear");
             }
         }
+    }
+}
+
+void Maze::fill()   //Fyller labyrinten med väggar och gångar i ett rutmönster
+{
+    int rndm = (rand() % (rows - 1)) | 0x1;   //Slumpa ett udda tal för slutpunkten, får ett udda tal genom att ta bitvis or med talet 00000001
+
+    for(int i = 0; i < rows; i++)  //Loopar rader
+    {
+        std::vector<node> row; //Temporär vektor att spara varje rad i 
+                        
+        for(int j = 0; j < cols; j++) //Loopar kolumner
+        {            
+            if(j == 0 && i == 1)                row.push_back(node(j, i));         //Om startpunkten är nådd skriv denna
+            else if(j == cols-1 && i == rndm)   row.push_back(node(j, i));         //Om slutpunkten är nådd skriv denna
+            else if(j % 2 == 0 || i % 2 == 0)   row.push_back(node(j, i, true));   //Om antalet rader eller kolumner är jämnt, skriv vägg
+            else                                row.push_back(node(j, i));         //Annars skriv gång
+        }
+        maze.push_back(row);  //Lägg till raden
     }
 }
 
@@ -165,60 +164,49 @@ std::istream& operator>>(std::istream& is, Maze & maze) //Läser in en labyrint
     return is;
 }
 
-void Maze::resetNodes()  //Återställer alla besökta och lösta noder
-{
-    //Loopar igenom hela labyrinten
-    for(int i = 0; i < rows; i++)
-        for(int j = 0; j < cols; j++)
-        {
-            if(maze[i][j].visited)  maze[i][j].visited = false; //Om en nod är besökt, återställ detta
-            if(maze[i][j].solved)    maze[i][j].solved = false; //Om en nod är löst, återställ detta
-        }
-}
-
 bool Maze::solve()
 {
     if(maze[1][1].visited) resetNodes(); //Kollar om noderna redan är använda, återställer dem isåfall.
 
-    std::stack<node> nodes; //Stack med den lösta gången, kommer när körningen är klar motsvara vägen igenom labyrinten
+    std::stack<node> path; //Stack med den lösta gången, kommer när körningen är klar motsvara vägen igenom labyrinten
     
     //Gå till första positionen
     maze[1][0].solved = true;
     maze[1][1].visited = true;
     maze[1][1].solved = true;
-    nodes.push(maze[1][1]);
+    path.push(maze[1][1]);
     
-    while(nodes.top().x != cols-1)  //Sålänge den inte har tagit sig igenom väggen till höger
+    while(path.top().x != cols-1)  //Sålänge den inte har tagit sig igenom väggen till höger
     {
-        node P = nodes.top();   //Spara den översta noden
+        node P = path.top();   //Spara den översta noden
 
         if(P.x == cols-2 && !maze[P.y][P.x+1].wall) //Om den är på den sista kolumnen, kolla om den kan hitta utgången
         {
             //Gå isåfall ut ur labyrinten
             maze[P.y][P.x+1].solved = true;
-            nodes.push(maze[P.y][P.x+1]);
+            path.push(maze[P.y][P.x+1]);
         }
         else
         {
             std::vector<node> neighbours = validateNeighbours(getNeighbours(P), P);   //Hämta samtliga grannar till den översta noden
             
-            node prev = nodes.top();    //Spara föregående nod
+            node prev = path.top();    //Spara föregående nod
 
             if(neighbours.empty())  //Om den inte hittar någonstans att gå
             {
                 //Plocka bort löst gång och backa i stacken
                 maze[prev.y][prev.x].solved = false;
-                nodes.pop();
+                path.pop();
 
-                if(nodes.empty())   return false;   //Om den har tömt hela stacken har den inte hittat någon lösning, returnera detta
+                if(path.empty())   return false;   //Om den har tömt hela stacken har den inte hittat någon lösning, returnera detta
                 
-                fixPath(nodes.top(), prev, false);  //Plocka bort den lösta gången mellan föregående och nuvarande position
+                fixPath(path.top(), prev, false);  //Plocka bort den lösta gången mellan föregående och nuvarande position
             }
             else
             {                
-                nodes.push(neighbours[rand() % neighbours.size()]); //Lägg till en slumpad granne till stacken
+                path.push(neighbours[rand() % neighbours.size()]); //Lägg till en slumpad granne till stacken
                 
-                P = nodes.top(); //Spara den slumpade grannen för enkelhetens skull
+                P = path.top(); //Spara den slumpade grannen för enkelhetens skull
 
                 maze[P.y][P.x].visited = true;   //Sätt den slumpade grannen som besökt
                 maze[P.y][P.x].solved = true;   //Sätt den slumpade grannen som löst
@@ -238,20 +226,31 @@ bool Maze::solve()
     return true;
 }
 
-std::vector<Maze::node> Maze::validateNeighbours(std::vector<node> nodes, node current) //Kollar vilka grannar som inte är bakom en vägg
+void Maze::resetNodes()  //Återställer alla besökta och lösta noder
+{
+    //Loopar igenom hela labyrinten
+    for(int i = 0; i < rows; i++)
+        for(int j = 0; j < cols; j++)
+        {
+            if(maze[i][j].visited)  maze[i][j].visited = false; //Om en nod är besökt, återställ detta
+            if(maze[i][j].solved)    maze[i][j].solved = false; //Om en nod är löst, återställ detta
+        }
+}
+
+std::vector<Maze::node> Maze::validateNeighbours(std::vector<node> path, node current) //Kollar vilka grannar som inte är bakom en vägg
 {
     std::vector<node> temp;
-    for(int i = 0; i < nodes.size(); i++)
+    for(int i = 0; i < path.size(); i++)
     {
-        if(current.y > nodes[i].y && !maze[current.y-1][current.x].wall)    temp.push_back(nodes[i]);   //Kollar grannen ovanför
-        if(current.y < nodes[i].y && !maze[current.y+1][current.x].wall)    temp.push_back(nodes[i]);   //Kollar grannen under
-        if(current.x > nodes[i].x && !maze[current.y][current.x-1].wall)    temp.push_back(nodes[i]);   //Kollar grannen till vänster
-        if(current.x < nodes[i].x && !maze[current.y][current.x+1].wall)    temp.push_back(nodes[i]);   //Kollar grannen till höger
+        if(current.y > path[i].y && !maze[current.y-1][current.x].wall)    temp.push_back(path[i]);   //Kollar grannen ovanför
+        if(current.y < path[i].y && !maze[current.y+1][current.x].wall)    temp.push_back(path[i]);   //Kollar grannen under
+        if(current.x > path[i].x && !maze[current.y][current.x-1].wall)    temp.push_back(path[i]);   //Kollar grannen till vänster
+        if(current.x < path[i].x && !maze[current.y][current.x+1].wall)    temp.push_back(path[i]);   //Kollar grannen till höger
     }
     return temp;
 }
 
-void Maze::fixPath(node P, node prev, bool state)   //Plockar bort / sätter dit löst gång mellan två noder
+void Maze::fixPath(node P, node prev, bool state)   //Plockar bort/sätter dit löst gång mellan två noder, ger snyggare utskrift
 {
     //Kollar samtliga riktningar
     if      (P.x == prev.x && P.y > prev.y)   maze[P.y-1][P.x].solved = state;  
@@ -259,3 +258,5 @@ void Maze::fixPath(node P, node prev, bool state)   //Plockar bort / sätter dit
     else if (P.y == prev.y && P.x > prev.x)   maze[P.y][P.x-1].solved = state;
     else if (P.y == prev.y && P.x < prev.x)   maze[P.y][P.x+1].solved = state;
 }
+
+

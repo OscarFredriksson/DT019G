@@ -1,19 +1,18 @@
 #include "maze.h"
 #include <getopt.h>
-#include <cstdlib> //atoi
 #include <fstream>
 #include <string>
 #include <random>
 
 void printHelp();   //Skriver ut hjälptext
 
-bool isInt(char* optarg);
+bool isInt(char* optarg);   //Kollar om ett givet argument innehåller endast integers
 
 int main(int argc, char* argv[])
 {   
-    srand(std::random_device()());
+    srand(std::random_device()());  //Starta slump
 
-    Maze maze;
+    Maze maze;  //Skapar en labyrint
     
     std::string inputFile;  //Filnamnet för den fil som ska läsas från
     std::string outputFile; //Filnamnet för den fil som ska skrivas till (behövs två utifall det ska skrivas och läsas från olika filer)
@@ -26,7 +25,7 @@ int main(int argc, char* argv[])
     const char    * short_opts = "vhbws: c: r: i: o: ";    //Definierar samtliga getopt flaggor
     const struct option long_opts[] =   //Definierar samtliga långa getopt flaggor
     {
-        {"version", 0,  NULL, 'v'},
+        {"version", 0,  NULL, 'v'}, //Argument 2 är om flaggan ska ta emot ett argument eller inte
         {"help",    0,  NULL, 'h'},
         {"watch",   0,  NULL, 'w'},
         {"check",   0,  NULL, 'b'},
@@ -198,7 +197,7 @@ void printHelp()    //Skriver ut hjälptext
     std::cout << std::endl;
 }
 
-bool isInt(char* optarg)  //Kollar om ett argument innehåller endast integers
+bool isInt(char* optarg)  //Kollar om ett givet argument innehåller endast integers
 {
     std::string temp(optarg);   //Gör om char* till string
     
