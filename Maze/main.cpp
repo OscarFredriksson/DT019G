@@ -12,9 +12,11 @@ int main(int argc, char* argv[])
 {    
     Maze maze;
     
-    std::string filename;
-    bool writeToFile = false;   //Om det ska skrivas till filen eller inte
+    std::string inputFile;  //Filnamnet för den fil som ska läsas från
+    std::string outputFile; //Filnamnet för den fil som ska skrivas till (behövs två utifall det ska skrivas och läsas från olika filer)
+
     bool readFromFile = false;  //Om det ska läsas från filen eller inte
+        bool writeToFile = false;   //Om det ska skrivas till filen eller inte
 
     bool check = false;
     
@@ -40,7 +42,7 @@ int main(int argc, char* argv[])
         {
             case 'v':
                 std::cout << "Version 1.0" << std::endl;  //Skriv ut version
-                break;
+                return EXIT_SUCCESS;
             case 'h':
             { 
                 printHelp();    
@@ -87,7 +89,6 @@ int main(int argc, char* argv[])
                 if(validateArg(optarg))
                 {
                     size_t size = atoi(optarg);
-                    if(size % 2 != 1)   size++;
 
                     maze.cols = size;
                 } 
@@ -103,7 +104,6 @@ int main(int argc, char* argv[])
                 if(validateArg(optarg))
                 {
                     size_t size = atoi(optarg);
-                    if(size % 2 != 1)   size++;
 
                     maze.rows = size;
                 }   
@@ -117,30 +117,33 @@ int main(int argc, char* argv[])
             case 'i':  //Om flaggan för utdata till en fil istället för cout
             {
                 readFromFile = true;
-                filename = std::string(optarg); //Spara filnamnet
+                inputFile = std::string(optarg); //Spara filnamnet
                 break;
             }
             case 'o':  //Om flaggan för utdata till en fil istället för cout
             {
                 writeToFile = true;
-                filename = std::string(optarg); //Spara filnamnet
+                outputFile = std::string(optarg); //Spara filnamnet
                 break;
             }
             case '?':  return EXIT_FAILURE; //Om ett felaktigt argument ges
             default:
+            {
                 std::cerr << "Nått gick fel, programmet bör ej komma hit." << std::endl;
                 return EXIT_FAILURE;
+            }
         }
     }
+
     if(readFromFile)
     {
-        std::ifstream input(filename.c_str());
+        std::ifstream input(inputFile.c_str());
         if(!input.is_open())
         {
-            std::cerr << "Kunde inte öppna filen \"" << filename << "\"." << std::endl;
+            std::cerr << "Kunde inte öppna filen \"" << inputFile << "\"." << std::endl;
             return EXIT_FAILURE;
         }
-        try 
+        try //Testar läsa in från filen
         {
             input >> maze;
         }
@@ -149,59 +152,49 @@ int main(int argc, char* argv[])
             std::cerr << "Error: " << c << std::endl;
             return EXIT_FAILURE;
         }
-
-        if(check)
-        {
-            if(maze.solve())    std::cout << "Löste labyrinten!" << std::endl;
-            else                std::cout << "Lyckades inte lösa labyrinten." << std::endl;
-        } 
-        else if(maze.solve())   std::cout << maze << std::endl;
-        else std::cout << "Lyckades inte lösa labyrinten." << std::endl;
-    
-
-       
-        return EXIT_SUCCESS;
     }
-
-    maze.generate();
+    else    maze.generate();
     
-    if(maze.solve())
+    if(check)
     {
+        if(maze.solve())    std::cout << "Löste labyrinten!" << std::endl;
+        else                std::cout << "Lyckades inte lösa labyrinten." << std::endl;
+    } 
+    else if(maze.solve())
+    { 
         if(writeToFile) //Om det ska skrivas till filen
         {
-            std::ofstream output(filename.c_str()); //Öppna filen med filnamnet
+            std::ofstream output(outputFile.c_str()); //Öppna filen med filnamnet
             if(!output.is_open())
             {
-                std::cerr << "Kunde inte öppna eller skapa filen." << std::endl;
+                std::cerr << "Kunde inte öppna eller skapa filen \"" << outputFile << "\"." << std::endl;
                 return EXIT_FAILURE;
             }
             output << maze << std::endl;    //Skriv labyrinten till den
         }
-        else    
-        {
-            system("clear");
-            std::cout << maze << std::endl;
-        }
+        else    std::cout << maze << std::endl;
     }
+    else std::cout << "Lyckades inte lösa labyrinten." << std::endl;
+
     return EXIT_SUCCESS;    //Om den tar sig igenom hela koden utan problem, returnera att körningen gick bra
 }
 
 void printHelp()    //Skriver ut hjälptext
 {
     std::cout << std::endl;
-    std::cout << "\t--version  | -v.      Skriver ut versionsnummer." << std::endl;
-    std::cout << "\t--help     | -h.      Skriver ut detta." << std::endl;
-    std::cout << "\t--watch    | -w.      Visar varje iteration medan labyrinten skapas/löses." << std::endl;
-    std::cout << "\t--check    | -b.      Skriver ut endast \"Löste labyrinten!\" om en lösning finnes, annars \"Lyckades inte lösa labyrinten.\"." << std::endl;
+    std::cout << "\t --version  | -v.      Skriver ut versionsnummer." << std::endl;
+    std::cout << "\t --help     | -h.      Skriver ut detta." << std::endl;
+    std::cout << "\t --watch    | -w.      Visar varje iteration medan labyrinten skapas/löses." << std::endl;
+    std::cout << "\t --check    | -b.      Skriver ut endast \"Löste labyrinten!\" om en lösning finnes, annars \"Lyckades inte lösa labyrinten.\"." << std::endl;
     std::cout << "\t(--size    | -s)N.    Skapa en labyrint med storleken N. Defaultvärde: 10." << std::endl;
     std::cout << "\t(--columns | -c)W.    Skapa en labyrint med bredden W.   Defaultvärde: 10." << std::endl;
-    std::cout << "\t(--rows    | -r)H.    Skapa en labyrint med höjden N.    Defaultvärde: 10." << std::endl;
+    std::cout << "\t(--rows    | -r)H.    Skapa en labyrint med höjden H.    Defaultvärde: 10." << std::endl;
     std::cout << "\t(--input   | -i)file. Använd filen file som indata istället för att generera en labyrint." << std::endl;
     std::cout << "\t(--output  | -o)file. Använd filen file för utdata. Annars cout." << std::endl;
     std::cout << std::endl;
 }
 
-bool validateArg(char* optarg)
+bool validateArg(char* optarg)  //Kollar om ett argument innehåller endast integers
 {
     std::string temp(optarg);   //Gör om char* till string
     

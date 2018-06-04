@@ -9,7 +9,6 @@ class Maze
     size_t rows = 10;
 
     bool showIterations = false;
-    int iterationSpeed = 50;
 
     void generate();
     bool solve();
@@ -19,12 +18,14 @@ class Maze
     
 
 private:
-    static const char PATH = ' ';
-    static const char WALL = '*';
-    static const char SOLVED = '.';
-    static const char START = 'S';
-    static const char END = 'X';
+    const char PATH = ' ';
+    const char WALL = '*';
+    const char SOLVED = '.';
+    const char START = 'S';
+    const char END = 'X';
     
+    const int iterationSpeed = 50;
+
     struct node 
     {
         node(const node & src)
@@ -49,9 +50,9 @@ private:
     
     void fill();
     std::vector<node> getNeighbours(node P);
-    void resetVisitedNodes();
+    void resetNodes();
     std::vector<node> validateNeighbours(std::vector<node> nodes, node current);
-    void fixWalls(node P, node prev, bool state);
+    void fixPath(node P, node prev, bool state);
 
 
 };
