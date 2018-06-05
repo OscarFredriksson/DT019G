@@ -24,7 +24,7 @@ private:
     
     const int iterationSpeed = 50;  //Hur snabbt programmet ska iterera lösning och generering när den visar varje iteration för användaren. Värdet 50 ger en iteration var 50e millisekund
 
-    struct node //En nod motsvarar en "koordinat" i labyrinten, alltså en gång eller vägg
+    struct node //En nod motsvarar en position i labyrinten, alltså en gång eller vägg
     {
         node(const node & src)  //Kopierings konstruktor
         {

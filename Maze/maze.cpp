@@ -258,5 +258,3 @@ void Maze::fixPath(node P, node prev, bool state)   //Plockar bort/sätter dit l
     else if (P.y == prev.y && P.x > prev.x)   maze[P.y][P.x-1].solved = state;
     else if (P.y == prev.y && P.x < prev.x)   maze[P.y][P.x+1].solved = state;
 }
-
-

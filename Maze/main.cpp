@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
     bool check = false; //Om programmet ska skriva ut labyrinten eller bara kolla om den kunde lösas eller inte
     
     const char    * short_opts = "vhbws: c: r: i: o: ";    //Definierar samtliga getopt flaggor
-    const struct option long_opts[] =   //Definierar samtliga långa getopt flaggor
+    const struct option long_opt[] =   //Definierar samtliga långa getopt flaggor
     {
         {"version", 0,  NULL, 'v'}, //Argument 2 är om flaggan ska ta emot ett argument eller inte
         {"help",    0,  NULL, 'h'},
@@ -38,12 +38,12 @@ int main(int argc, char* argv[])
     };
 
     int arg;
-    while ((arg = getopt_long(argc, argv, short_opts, long_opts, nullptr)) != -1)   //Loopa igenom alla argument
+    while ((arg = getopt_long(argc, argv, short_opts, long_opt, nullptr)) != -1)   //Loopa igenom alla argument
     {
         switch(arg)
         {
             case 'v':   //Versionsflagga
-                std::cout << "Version 1.0" << std::endl;  //Skriv ut version
+                std::cout << "Version 1.1" << std::endl;  //Skriv ut version
                 return EXIT_SUCCESS;
             case 'h':   //Hjälpflagga
             { 
@@ -185,10 +185,10 @@ int main(int argc, char* argv[])
 void printHelp()    //Skriver ut hjälptext
 {
     std::cout << std::endl;
-    std::cout << "\t --version  | -v.      Skriver ut versionsnummer." << std::endl;
-    std::cout << "\t --help     | -h.      Skriver ut detta." << std::endl;
-    std::cout << "\t --watch    | -w.      Visar varje iteration medan labyrinten skapas/löses." << std::endl;
-    std::cout << "\t --check    | -b.      Skriver ut endast \"Löste labyrinten!\" om en lösning finnes, annars \"Lyckades inte lösa labyrinten.\"." << std::endl;
+    std::cout << "\t --version | -v.      Skriver ut versionsnummer." << std::endl;
+    std::cout << "\t --help    | -h.      Skriver ut detta." << std::endl;
+    std::cout << "\t --watch   | -w.      Visar varje iteration medan labyrinten skapas/löses." << std::endl;
+    std::cout << "\t --check   | -b.      Skriver ut endast \"Löste labyrinten!\" om en lösning finnes, annars \"Lyckades inte lösa labyrinten.\"." << std::endl;
     std::cout << "\t(--size    | -s)N.    Skapa en labyrint med storleken N. Defaultvärde: 10." << std::endl;
     std::cout << "\t(--columns | -c)W.    Skapa en labyrint med bredden W.   Defaultvärde: 10." << std::endl;
     std::cout << "\t(--rows    | -r)H.    Skapa en labyrint med höjden H.    Defaultvärde: 10." << std::endl;
