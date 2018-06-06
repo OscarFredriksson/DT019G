@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
     bool check = false; //Om programmet ska skriva ut labyrinten eller bara kolla om den kunde lösas eller inte
     
     const char    * short_opts = "vhbws: c: r: i: o: ";    //Definierar samtliga getopt flaggor
-    const struct option long_opt[] =   //Definierar samtliga långa getopt flaggor
+    const struct option long_opts[] =   //Definierar samtliga långa getopt flaggor
     {
         {"version", 0,  NULL, 'v'}, //Argument 2 är om flaggan ska ta emot ett argument eller inte
         {"help",    0,  NULL, 'h'},
@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
     };
 
     int arg;
-    while ((arg = getopt_long(argc, argv, short_opts, long_opt, nullptr)) != -1)   //Loopa igenom alla argument
+    while ((arg = getopt_long(argc, argv, short_opts, long_opts, nullptr)) != -1)   //Loopa igenom alla argument
     {
         switch(arg)
         {
