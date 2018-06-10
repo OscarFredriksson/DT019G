@@ -139,10 +139,10 @@ std::istream& operator>>(std::istream& is, Maze & maze) //Läser in en labyrint
              */        
             for(int j = 0, x = 0; j < temp_row.size(); j++, x++)
             {
-                if(temp_row[j] == maze.WALL)  //Om tecknet är vägg
+                if(std::string(1, temp_row[j]) == maze.WALL)  //Om tecknet är vägg
                     row.push_back(Maze::node(x, i, true));  //Lägg till en vägg i raden
                 
-                else if(temp_row[j] == maze.PATH || temp_row[j] == maze.SOLVED) //Om tecknet är gång eller löst gång
+                else if(std::string(1, temp_row[j]) == maze.PATH || std::string(1, temp_row[j]) == maze.SOLVED) //Om tecknet är gång eller löst gång
                     row.push_back(Maze::node(x, i));    //Lägg till en gång i raden
                 
                 else    
