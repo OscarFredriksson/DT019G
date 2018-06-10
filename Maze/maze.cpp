@@ -82,6 +82,7 @@ std::vector<Maze::node> Maze::getNeighbours(node P) //Hämtar alla obesökta gra
 
 std::ostream& operator<<(std::ostream& os, const Maze & maze)   //Skriver ut en labyrint
 {
+    std::string output;
     for(int i = 0; i < maze.rows; i++) //Loopar igenom alla rader
     {
         for(int j = 0; j < maze.cols; j++)    //Loopar igenom alla kolumner
@@ -115,6 +116,7 @@ std::ostream& operator<<(std::ostream& os, const Maze & maze)   //Skriver ut en 
         }
         os << std::endl;    //Skriv radbrytning efter varje rad
     }
+    os << output;
     return os;
 }
 
